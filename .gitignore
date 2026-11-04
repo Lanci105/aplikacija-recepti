@@ -1,0 +1,25 @@
+# macOS in dnevniki
+.DS_Store
+*.log
+
+# Ustvarjene datoteke
+**/node_modules/
+**/dist/
+**/target/
+**/build/
+
+# Lokalne nastavitve in skrivnosti
+.env
+.env.*
+!.env.example
+*.local
+
+# Razvojna orodja in začasne Spring Boot datoteke
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache
+.github/modernize/

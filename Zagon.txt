@@ -1,0 +1,43 @@
+Prvi terminal: brew services start postgresql@16
+preveri bazo: psql -d recepti -c "SELECT current_database();"
+
+Drugi terminal: cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
+./mvnw spring-boot:run
+
+Tretji terminal: cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
+npm run dev
+
+
+
+Baje novi zagon: 
+brew services start postgresql@16
+
+psql -d recepti -c "SELECT current_database();"
+
+
+drugi terminal: 
+export DB_URL="jdbc:postgresql://localhost:5432/recepti"
+export DB_USERNAME="$(whoami)"
+export DB_PASSWORD=""
+
+cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
+./mvnw spring-boot:run
+
+
+tretji terminal: 
+cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
+npm run dev
+
+
+
+Prikaz baze receptov: psql -d recepti -c "SELECT * FROM recept;"
+
+Recept: 
+{
+  "ime": "Palačinke za zagovor",
+  "sestavine": "200 g moke, 300 ml mleka, 2 jajci",
+  "navodila": "Zmešaj sestavine in speci palačinke.",
+  "casPriprave": 20,
+  "kategorije": "sladice",
+  "vrstaObroka": "zajtrk"
+}

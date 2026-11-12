@@ -5,6 +5,7 @@ Spletna aplikacija za shranjevanje in urejanje receptov. Projekt je sestavljen i
 ## Kazalo
 
 - [O projektu](#o-projektu)
+- [Vizija projekta](#vizija-projekta)
 - [Uporabljene tehnologije](#uporabljene-tehnologije)
 - [Struktura projekta](#struktura-projekta)
 - [Predpogoji](#predpogoji)
@@ -27,6 +28,30 @@ Glavne funkcionalnosti:
 - Swagger UI za pregled in preizkušanje REST API-ja.
 
 Projekt je namenjen lokalnemu zagonu in študijskemu prikazu. Trenutno nima uporabniških računov ali preverjanja prijave.
+
+## Vizija projekta
+
+### Opis rešitve
+
+Aplikacija za recepte je namenjena ljudem, ki želijo na enem mestu shranjevati, urejati in iskati recepte. Uporabnik lahko doda svoj recept s seznamom sestavin, koraki priprave, fotografijo in drugimi podatki, kot so čas priprave, število porcij, zahtevnost, kategorija in vrsta obroka. Recepte si lahko ogleda v pregledni obliki ter jih razvršča in filtrira glede na izbrane lastnosti.
+
+Namen aplikacije je olajšati organizacijo receptov in načrtovanje priprave jedi. Uporabna je za vsakogar, ki rad kuha, želi zbrati svoje najljubše recepte ali išče idejo za obrok glede na svoje želje.
+
+#### Ključne funkcionalnosti
+
+- Dodajanje, prikaz, urejanje in brisanje receptov.
+- Vnos imena, opisa, fotografije, časa priprave, števila porcij in zahtevnosti.
+- Dodajanje sestavin in oštevilčenih korakov priprave.
+- Izbira kategorij in vrste obroka.
+- Filtriranje receptov glede na njihove lastnosti.
+- Shranjevanje receptov v podatkovni bazi PostgreSQL.
+- Uporaba spletnega vmesnika za delo z recepti in REST API-ja za povezavo med vmesnikom in zaledjem.
+
+### Obseg rešitve in morebitne omejitve
+
+Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Trenutna različica ne vključuje uporabniških računov, zato recepti niso ločeni po uporabnikih. Prav tako aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
+
+Fotografije receptov so odvisne od načina shranjevanja oziroma dostopnosti slik. Za uporabo aplikacije morajo biti zagnani zaledni strežnik, uporabniški vmesnik in podatkovna baza.
 
 ## Uporabljene tehnologije
 

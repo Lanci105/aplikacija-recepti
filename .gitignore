@@ -2,19 +2,19 @@
 .DS_Store
 *.log
 
-# Ustvarjene datoteke
+# datoteke
 **/node_modules/
 **/dist/
 **/target/
 **/build/
 
-# Lokalne nastavitve in skrivnosti
+# lokalne nastavitve
 .env
 .env.*
 !.env.example
 *.local
 
-# Razvojna orodja in začasne Spring Boot datoteke
+# razvojna orodja in začasne Spring Boot datoteke
 .idea/
 .vscode/
 .classpath

@@ -1,0 +1,278 @@
+Primer uporabe: Dodajanje priljubljenega recepta
+ID: PU-01
+---------------------------------------------------------------------------------
+Cilj: Prijavljen uporabnik želi shraniti recept med priljubljene, da ga lahko 
+naslednjič hitreje najde. 
+---------------------------------------------------------------------------------
+Akterji: Prijavljen uporabnik, aplikacija.
+---------------------------------------------------------------------------------
+Predpogoji: 
+- Uporabnik ima ustvarjen račun in je prijavljen v aplikacijo. 
+- Recept, ki ga želi dodati med priljubljene, je že shranjen v aplikaciji.
+---------------------------------------------------------------------------------
+Stanje sistema po PU: Recept je shranjen med priljubljene uporabnika in je 
+dostopen na seznamu priljubljenih receptov.
+---------------------------------------------------------------------------------
+Scenarij:
+1. Uporabnik odpre aplikacijo. 
+2. Uporabnik najde recept, ki ga želi dodati med priljubljene. 
+3. Uporabnik klikne na gumb "Dodaj med priljubljene".
+4. Aplikacija preveri, ali je uporabnik prijavljen. 
+5. Aplikacija shrani povezavo med uporabnikom in receptom v podatkovno bazo.
+6. Aplikacija prikaže sporočilo, da je bil recept uspešno dodan med priljubljene 
+   in označi recept za priljubljen. 
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+5.a. Povezava med uporabnikom in receptom že obstaja:
+   1. Aplikacija prikaže sporočilo, da je recept že med priljubljenimi.
+   2. Uporabnik se vrne na seznam receptov ali nadaljuje z iskanjem drugih receptov.
+---------------------------------------------------------------------------------
+Izjeme:
+- Recept ni več na voljo: Aplikacija prikaže sporočilo, da recepta ni mogoče dodati 
+  med priljubljene in osveži prikaz seznama receptov. 
+- Uporabniku poteče seja: Aplikacija prikaže sporočilo, da je seja potekla in ga 
+  preusmeri na ponovno prijavo. Povezava med uporabnikom in receptom se ne shrani.
+- Podatkovna baza ni dosegljiva ali pa shranjevanje ne uspe: Aplikacija prikaže 
+  sporočilo, da recepta ni bilo mogoče dodati med priljubljene. Recept ni na seznamu
+  priljubljenih. 
+- Aplikacija ne more prikazati potrditvenega sporočila: Aplikacija ohrani shranjeno 
+  stanje in uporabniku omogoči, da osveži seznam priljubljenih, da preveri, ali je 
+  recept dodan med priljubljene.
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: Odstranjevanje priljubljenega recepta
+ID: PU-02
+---------------------------------------------------------------------------------
+Cilj: Prijavljen uporabnik želi odstraniti recept iz seznama priljubljenih. 
+---------------------------------------------------------------------------------
+Akterji: Prijavljen uporabnik, aplikacija.
+---------------------------------------------------------------------------------
+Predpogoji: 
+- Uporabnik ima ustvarjen račun in je prijavljen v aplikacijo.
+- Recept, ki ga želi odstraniti iz seznama priljubljenih, je že shranjen med 
+  priljubljene uporabnika.
+---------------------------------------------------------------------------------
+Stanje sistema po PU: Recept je odstranjen iz seznama priljubljenih uporabnika. 
+Recept ostane v aplikaciji. 
+---------------------------------------------------------------------------------
+Scenarij:
+1. Uporabnik odpre aplikacijo.
+2. Uporabnik odpre seznam priljubljenih receptov.
+3. Uporabnik najde recept, ki ga želi odstraniti iz seznama priljubljenih.
+4. Uporabnik klikne na gumb "Odstrani iz priljubljenih".
+5. Aplikacija preveri, ali je uporabnik prijavljen.
+6. Aplikacija odstrani povezavo med uporabnikom in receptom iz podatkovne baze.
+7. Aplikacija prikaže sporočilo, da je bil recept uspešno odstranjen iz seznama
+   priljubljenih in odstrani oznako za priljubljen recept.
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+2.a Uporabnik odstrani recept iz priljubljenih neposredno na kartici recepta 
+   1. Uporabnik odpre kartico recepta, ki je shranjen med priljubljene.
+   2. Uporabnik klikne na gumb "Odstrani iz priljubljenih".
+   3. Aplikacija preveri, ali je uporabnik prijavljen.
+   4. Aplikacija odstrani povezavo med uporabnikom in receptom iz podatkovne baze.
+   5. Aplikacija prikaže sporočilo, da je bil recept uspešno odstranjen iz seznama
+      priljubljenih in odstrani oznako za priljubljen recept.
+---------------------------------------------------------------------------------
+Izjeme:
+- Uporabnik ni več prijavljen: Aplikacija prikaže sporočilo, da je seja potekla in ga 
+  preusmeri na ponovno prijavo. Povezava med uporabnikom in receptom se ne odstrani.
+- Podatkovna baza ni dosegljiva ali pa odstranjevanje ne uspe: Aplikacija prikaže 
+  sporočilo, da recepta ni bilo mogoče odstraniti iz seznama priljubljenih. Recept 
+  ostane na seznamu priljubljenih.
+- Recept je že bil odstranjen iz priljubljenih: Aplikacija prikaže sporočilo, da 
+  recepta ni mogoče odstraniti, ker ni več med priljubljenimi.
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: Urejanje uporabniškega računa
+ID: PU-03
+---------------------------------------------------------------------------------
+Cilj: Prijavljen uporabnik želi spremeniti podatke svojega računa. 
+---------------------------------------------------------------------------------
+Akterji: Prijavljen uporabnik, aplikacija.
+---------------------------------------------------------------------------------
+Predpogoji: 
+- Uporabnik ima ustvarjen račun in je prijavljen v aplikacijo.
+- Stran za urejanje uporabniškega računa je dostopna.
+---------------------------------------------------------------------------------
+Stanje sistema po PU: Podatki uporabniškega računa so posodobljeni. Če uporabnik 
+sprememb ne shrani, ostanejo podatki nespremenjeni.
+---------------------------------------------------------------------------------
+Scenarij:
+1. Uporabnik odpre svoj račun v aplikaciji.
+2. Aplikacija prikaže podatke uporabniškega računa.
+3. Uporabnik klikne na gumb "Uredi račun".
+4. Uporabnik spremeni želene podatke (npr. ime, e-poštni naslov, geslo).
+5. Aplikacije preveri vnesene podatke (npr. veljavnost e-poštnega naslova, dolžina gesla).
+6. Uporabnik klikne na gumb "Shrani spremembe".
+7. Aplikacija shrani posodobljene podatke v podatkovno bazo
+8. Aplikacija prikaže sporočilo, da so bile spremembe uspešno shranjene.
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+4.a Uporabnik ne spremeni vseh podatkov, ampak le nekatere. 
+    1. Aplikacije preveri vnesene podatke (npr. veljavnost e-poštnega naslova, dolžina gesla).
+    2. Uporabnik klikne na gumb "Shrani spremembe".
+    3. Aplikacija shrani posodobljene podatke v podatkovno bazo.
+    4. Aplikacija prikaže sporočilo, da so bile spremembe uspešno shranjene.
+6.a Uporabnik prekliče urejanje računa in ne shrani sprememb.
+    1. Aplikacija prikaže sporočilo, da spremembe niso bile shranjene.
+    2. Uporabnik se vrne na prejšnjo stran brez spremenjenih podatkov.
+---------------------------------------------------------------------------------
+Izjeme:
+- Uporabnik ni več prijavljen: Aplikacija prikaže sporočilo, da je seja potekla in ga 
+  preusmeri na ponovno prijavo. Spremembe se ne shranijo.
+- Podatkovna baza ni dosegljiva ali pa shranjevanje ne uspe: Aplikacija prikaže 
+  sporočilo, da sprememb ni bilo mogoče shraniti
+- Uporabnik vnese neveljavne podatke (npr. neveljaven e-poštni naslov, prekratko geslo): 
+  Aplikacija prikaže sporočilo o napaki in uporabniku omogoči, da vnese veljavne podatke.
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: Brisanje uporabniškega računa
+ID: PU-04
+---------------------------------------------------------------------------------
+Cilj: Prijavljen uporabnik želi trajno izbrisati svoj uporabniški račun. 
+---------------------------------------------------------------------------------
+Akterji: Prijavljen uporabnik, aplikacija. 
+---------------------------------------------------------------------------------
+Predpogoji: 
+- Uporabnik ima ustvarjen račun in je prijavljen v aplikacijo.
+- Uporabnik lahko dostopa do strani za brisanje uporabniškega računa.
+---------------------------------------------------------------------------------
+Stanje sistema po PU: Uporabniški račun je trajno izbrisan, skupaj z vsemi podatki, 
+povezanimi z računom (npr. priljubljeni recepti).
+---------------------------------------------------------------------------------
+Scenarij:
+1. Uporabnik odpre svoj račun v aplikaciji.
+2. Aplikacija prikaže podatke uporabniškega računa.
+3. Uporabnik klikne na gumb "Izbriši račun".
+4. Aplikacija prikaže opozorilo o trajnem brisanju računa. 
+5. Uporabnik potrdi, da želi izbrisati račun.
+6. Aplikacija odstrani uporabniški račun in vse povezane podatke iz podatkovne baze.
+7. Aplikacija prikaže sporočilo, da je bil račun uspešno izbrisan in preusmeri 
+   uporabnika na začetno stran aplikacije.
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+4.a Uporabnik prekliče brisanje računa.
+   1. Aplikacija prikaže sporočilo, da račun ni bil izbrisan.
+   2. Uporabnik se vrne na prejšnjo stran, podatki ostanejo nespremenjeni.
+---------------------------------------------------------------------------------
+Izjeme:
+- Uporabnik ni več prijavljen: Aplikacija prikaže sporočilo, da je seja potekla in ga 
+  preusmeri na ponovno prijavo. Račun se ne izbriše.
+- Podatkovna baza ni dosegljiva ali pa brisanje ne uspe: Aplikacija prikaže sporočilo, 
+  da računa ni bilo mogoče izbrisati.
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: 
+ID: PU-05
+---------------------------------------------------------------------------------
+Cilj: 
+---------------------------------------------------------------------------------
+Akterji: 
+---------------------------------------------------------------------------------
+Predpogoji: 
+- 
+---------------------------------------------------------------------------------
+Stanje sistema po PU: 
+---------------------------------------------------------------------------------
+Scenarij:
+1. 
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+
+---------------------------------------------------------------------------------
+Izjeme:
+- 
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: 
+ID: PU-06
+---------------------------------------------------------------------------------
+Cilj: 
+---------------------------------------------------------------------------------
+Akterji: 
+---------------------------------------------------------------------------------
+Predpogoji: 
+- 
+---------------------------------------------------------------------------------
+Stanje sistema po PU: 
+---------------------------------------------------------------------------------
+Scenarij:
+1. 
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+
+---------------------------------------------------------------------------------
+Izjeme:
+- 
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: 
+ID: PU-07
+---------------------------------------------------------------------------------
+Cilj: 
+---------------------------------------------------------------------------------
+Akterji: 
+---------------------------------------------------------------------------------
+Predpogoji: 
+- 
+---------------------------------------------------------------------------------
+Stanje sistema po PU: 
+---------------------------------------------------------------------------------
+Scenarij:
+1. 
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+
+---------------------------------------------------------------------------------
+Izjeme:
+- 
+
+
+----------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+
+Primer uporabe: 
+ID: PU-08
+---------------------------------------------------------------------------------
+Cilj: 
+---------------------------------------------------------------------------------
+Akterji: 
+---------------------------------------------------------------------------------
+Predpogoji: 
+- 
+---------------------------------------------------------------------------------
+Stanje sistema po PU: 
+---------------------------------------------------------------------------------
+Scenarij:
+1. 
+---------------------------------------------------------------------------------
+Alternativni tokovi: 
+
+---------------------------------------------------------------------------------
+Izjeme:
+- 

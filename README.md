@@ -43,13 +43,15 @@ Namen aplikacije je olajšati organizacijo receptov in načrtovanje priprave jed
 - Vnos imena, opisa, fotografije, časa priprave, števila porcij in zahtevnosti.
 - Dodajanje sestavin in oštevilčenih korakov priprave.
 - Izbira kategorij in vrste obroka.
-- Filtriranje receptov glede na njihove lastnosti.
+- Iskanje receptov po imenu in filtriranje glede na njihove lastnosti; iskanje je na voljo tudi obiskovalcem.
+- Registracija obiskovalca in prijava v uporabniški račun.
+- Dodajanje receptov med priljubljene in odstranjevanje iz priljubljenih ter ocenjevanje receptov; ti možnosti sta na voljo samo prijavljenim uporabnikom.
 - Shranjevanje receptov v podatkovni bazi PostgreSQL.
 - Uporaba spletnega vmesnika za delo z recepti in REST API-ja za povezavo med vmesnikom in zaledjem.
 
 ### Obseg rešitve in morebitne omejitve
 
-Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Trenutna različica ne vključuje uporabniških računov, zato recepti niso ločeni po uporabnikih. Prav tako aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
+Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Registracija in prijava, upravljanje priljubljenih receptov ter ocenjevanje so del vizije in v trenutni različici še niso implementirani. Prav tako aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
 
 Fotografije receptov so odvisne od načina shranjevanja oziroma dostopnosti slik. Za uporabo aplikacije morajo biti zagnani zaledni strežnik, uporabniški vmesnik in podatkovna baza.
 

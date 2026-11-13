@@ -2,6 +2,8 @@
 
 Spletna aplikacija za shranjevanje in urejanje receptov. Projekt je sestavljen iz ločenega frontenda in backenda: Reactov frontend komunicira s Spring Boot REST API-jem, backend pa recepte shranjuje v PostgreSQL.
 
+Ivona Duraković Djordjević, Lana Horvat, Nejc Urisek
+
 ## Kazalo
 
 - [O projektu](#o-projektu)

@@ -377,7 +377,7 @@ Alternativni tokovi:
 7.a Uporabnik je recept že ocenil, aplikacija pa omogoča urejanje ocene:
    1. Aplikacija prikaže njegovo obstoječo oceno.
    2. Uporabnik izbere novo oceno in jo potrdi.
-   3. Aplikacija posodobi obstoječo oceno name  sto ustvarjanja nove.
+   3. Aplikacija posodobi obstoječo oceno namesto ustvarjanja nove.
 
 5.a Uporabnik prekliče ocenjevanje:
    1. Uporabnik zapusti stran ali prekliče vnos.

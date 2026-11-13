@@ -228,3 +228,6 @@ Pri ustvarjanju repozitorija na GitHubu izberi vidnost **Public**. V **Settings 
 - Uporabi UTF-8 in ohranjaj slovenske šumnike v prikazanih besedilih.
 - Imena naj bodo razumljiva, komentarji pa naj pojasnijo namen ali razlog za manj očiten del kode.
 - Sporočila commitov naj bodo kratka in naj povedo, kaj se je spremenilo, na primer `feat: add recipe category filter`, `fix: show uploaded image` ali `docs: update setup guide`.
+
+## Diagram primerov uporabe
+![Diagram primerov uporabe](backend/Slike/diagram.png)

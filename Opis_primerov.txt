@@ -179,100 +179,218 @@ Izjeme:
 ----------------------------------------------------------------------------------------------
 
 
-Primer uporabe: 
+Primer uporabe: Registracija Uporabnika
 ID: PU-05
 ---------------------------------------------------------------------------------
-Cilj: 
+Cilj: Nov uporabnik želi ustvariti uporabniški račun, da lahko uporablja
+funkcionalnosti aplikacije, ki so na voljo prijavljenim uporabnikom.
 ---------------------------------------------------------------------------------
-Akterji: 
+Akterji: Neprijavljen uporabnik, aplikacija.
 ---------------------------------------------------------------------------------
 Predpogoji: 
-- 
+- Uporabnik ima dostop do aplikacije in strani za registracijo.
+- Uporabnik še nima računa, registriranega z istim e-poštnim naslovom.
+- Aplikacija in podatkovna baza sta dosegljivi.
 ---------------------------------------------------------------------------------
-Stanje sistema po PU: 
+Stanje sistema po PU: Uporabniški račun je ustvarjen in podatki so shranjeni v
+podatkovni bazi. Uporabnik lahko nadaljuje s prijavo. Če registracija ni uspešna, nov račun ni ustvarjen.
 ---------------------------------------------------------------------------------
 Scenarij:
-1. 
+1. Uporabnik odpre aplikacijo.
+2. Izbere možnost »Registracija«.
+3. Aplikacija prikaže registracijski obrazec.
+4. Uporabnik vnese zahtevane podatke (npr. ime, e-poštni naslov in geslo).
+5. Uporabnik potrdi registracijo s klikom na gumb »Registriraj se«.
+6. Aplikacija preveri, ali so vsa obvezna polja izpolnjena in ali so podatki v pravilni obliki.
+7. Aplikacija preveri, ali račun s tem e-poštnim naslovom že obstaja.
+8. Aplikacija varno obdela geslo in ustvari uporabniški račun.
+9. Aplikacija shrani podatke novega uporabnika v podatkovno bazo.
+10. Aplikacija prikaže sporočilo o uspešni registraciji in uporabnika preusmeri na stran za prijavo.
 ---------------------------------------------------------------------------------
-Alternativni tokovi: 
+Alternativni tokovi:
+4.a Uporabnik vnese samo del podatkov:
+   1. Aplikacija označi manjkajoča obvezna polja.
+   2. Uporabnik dopolni podatke in ponovno odda obrazec.
 
+7.a Uporabnik vnese e-poštni naslov, ki je že registriran:
+   1. Aplikacija prikaže obvestilo, da račun s tem e-poštnim naslovom že obstaja.
+   2. Uporabnik lahko vnese drug e-poštni naslov ali izbere možnost »Prijava«.
+
+5.a Uporabnik prekliče registracijo:
+   1. Uporabnik zapusti registracijski obrazec.
+   2. Aplikacija ne ustvari računa in uporabnika vrne na prejšnjo stran.
 ---------------------------------------------------------------------------------
 Izjeme:
-- 
-
+- Neveljaven e-poštni naslov: aplikacija prikaže jasno sporočilo o napaki in zahteva popravek.
+- Geslo ne ustreza pravilom aplikacije: aplikacija prikaže zahtevana pravila za geslo; račun se ne ustvari.
+- Podatkovna baza ni dosegljiva ali shranjevanje ne uspe: aplikacija prikaže obvestilo, da registracija
+ trenutno ni mogoča; uporabniški račun se ne ustvari.
+- Pri obdelavi pride do nepričakovane napake: aplikacija prikaže splošno obvestilo, ne razkrije tehničnih
+ podrobnosti in omogoči ponovni poskus.
 
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
 
-Primer uporabe: 
+Primer uporabe: Prijava v račun
 ID: PU-06
 ---------------------------------------------------------------------------------
-Cilj: 
+Cilj: Registriran uporabnik se želi prijaviti v svoj račun, da lahko dostopa do osebnih
+ funkcionalnosti aplikacije, kot so priljubljeni recepti, urejanje računa in ocenjevanje receptov.
 ---------------------------------------------------------------------------------
-Akterji: 
+Akterji: Registriran uporabnik, aplikacija.
 ---------------------------------------------------------------------------------
 Predpogoji: 
-- 
+- Uporabnik ima ustvarjen uporabniški račun.
+- Uporabnik pozna svoje prijavne podatke.
+- Aplikacija je dosegljiva.
 ---------------------------------------------------------------------------------
-Stanje sistema po PU: 
+Stanje sistema po PU: Uporabnik je uspešno prijavljen in aplikacija vzpostavi
+ uporabniško sejo. Če prijava ni uspešna, uporabnik ostane neprijavljen.
 ---------------------------------------------------------------------------------
 Scenarij:
-1. 
+1. Uporabnik odpre aplikacijo.
+2. Izbere možnost »Prijava«.
+3. Aplikacija prikaže obrazec za prijavo.
+4. Uporabnik vnese e-poštni naslov in geslo.
+5. Uporabnik klikne gumb »Prijavi se«.
+6. Aplikacija preveri, ali sta polji izpolnjeni.
+7. Aplikacija preveri prijavne podatke glede na podatke, shranjene v podatkovni bazi.
+8. Če so podatki pravilni, aplikacija ustvari uporabniško sejo.
+9. Aplikacija uporabnika preusmeri na začetno stran oziroma zadnjo obiskano stran in prikaže,
+ da je prijava uspešna.
 ---------------------------------------------------------------------------------
-Alternativni tokovi: 
+Alternativni tokovi:
+4.a Uporabnik pozabi geslo:
+   1. Uporabnik izbere možnost »Pozabljeno geslo«.
+   2. Aplikacija ga preusmeri na postopek ponastavitve gesla.
+   3. Prijava se nadaljuje šele po uspešni ponastavitvi in ponovnem vnosu podatkov.
 
+6.a Eno ali obe polji sta prazni:
+   1. Aplikacija označi prazna polja.
+   2. Uporabnik vnese manjkajoče podatke in ponovno poskusi.
+
+7.a Prijavni podatki niso pravilni:
+   1. Aplikacija prikaže obvestilo, da prijava ni uspela.
+   2. Uporabnik lahko ponovno vnese e-poštni naslov in geslo.
 ---------------------------------------------------------------------------------
 Izjeme:
-- 
+- Uporabniški račun ne obstaja: aplikacija prikaže splošno obvestilo, da prijava ni uspela.
+- Podatkovna baza ali storitev za preverjanje prijave ni dosegljiva: aplikacija sporoči,
+ da prijava trenutno ni mogoča, in omogoči poznejši ponovni poskus.
+- Seja se ne more ustvariti: aplikacija uporabnika ne označi kot prijavljenega in prikaže obvestilo o napaki.
 
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
 
-Primer uporabe: 
+Primer uporabe: Iskanje recepta po imenu
 ID: PU-07
 ---------------------------------------------------------------------------------
-Cilj: 
+Cilj: Uporabnik želi poiskati recept z vnosom njegovega imena oziroma dela imena, da hitro najde želeni recept.
 ---------------------------------------------------------------------------------
-Akterji: 
+Akterji: Uporabnik (prijavljen ali neprijavljen), aplikacija.
 ---------------------------------------------------------------------------------
 Predpogoji: 
-- 
+- Uporabnik ima dostop do aplikacije.
+- Funkcionalnost iskanja receptov je na voljo.
+- Recepti so vneseni in shranjeni v aplikaciji, da jih je mogoče prikazati med rezultati.
 ---------------------------------------------------------------------------------
-Stanje sistema po PU: 
+Stanje sistema po PU: Podatki o receptih se ne spremenijo. Aplikacija prikaže seznam
+receptov, ki ustrezajo iskalnemu nizu, oziroma obvestilo, da zadetkov ni.
 ---------------------------------------------------------------------------------
 Scenarij:
-1. 
+1. Uporabnik odpre aplikacijo.
+2. Odpre iskalno polje za recepte.
+3. V iskalno polje vnese ime recepta ali del imena.
+4. Uporabnik sproži iskanje (npr. s klikom na gumb »Išči« ali s potrditvijo vnosa).
+5. Aplikacija preveri iskalni niz in odstrani odvečne presledke.
+6. Aplikacija poišče recepte, katerih ime ustreza vnesenemu iskalnemu nizu.
+7. Aplikacija prikaže seznam najdenih receptov z osnovnimi podatki (npr. ime in slika recepta).
+8. Uporabnik lahko izbere recept in odpre njegov podrobni prikaz.
 ---------------------------------------------------------------------------------
 Alternativni tokovi: 
+3.a Uporabnik vnese samo del imena recepta:
+   1. Aplikacija poišče recepte, katerih ime vsebuje vneseni niz.
+   2. Aplikacija prikaže vse ustrezne zadetke.
 
+7.a Iskanje vrne več receptov:
+   1. Aplikacija prikaže vse ustrezne recepte, po potrebi razdeljene na več strani.
+   2. Uporabnik lahko pregleda rezultate in izbere želeni recept.
+
+7.b Iskanje ne vrne nobenega recepta:
+   1. Aplikacija prikaže sporočilo »Ni najdenih receptov«.
+   2. Uporabnik lahko spremeni iskalni niz in ponovno išče.
+
+3.b Uporabnik izbriše iskalni niz:
+   1. Aplikacija odstrani prejšnje rezultate oziroma prikaže začetni seznam receptov.
 ---------------------------------------------------------------------------------
 Izjeme:
-- 
-
+- Iskalno polje je prazno: aplikacija prikaže navodilo za vnos imena recepta ali prikaže vse
+ recepte, če je tako določeno v aplikaciji.
+- Iskalni niz vsebuje nedovoljene znake ali je predolg: aplikacija opozori uporabnika
+ in zahteva popravek vnosa.
+- Povezava s podatkovno bazo ni mogoča: aplikacija prikaže obvestilo,
+ da iskanja trenutno ni mogoče izvesti, in omogoči ponovni poskus.
+- Pri prikazu rezultatov pride do napake: aplikacija prikaže obvestilo o napaki;
+ uporabnik lahko osveži stran ali ponovi iskanje.
 
 ----------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------
 
 
-Primer uporabe: 
+Primer uporabe: Ocenjevanje recepta
 ID: PU-08
 ---------------------------------------------------------------------------------
-Cilj: 
+Cilj: Uporabnik želi oceniti recept, da izrazi svoje mnenje o njem in drugim
+ uporabnikom pomaga pri izbiri receptov.
 ---------------------------------------------------------------------------------
-Akterji: 
+Akterji: Prijavljen uporabnik, aplikacija.
 ---------------------------------------------------------------------------------
 Predpogoji: 
-- 
+- Uporabnik ima ustvarjen račun in je prijavljen v aplikacijo.
+- Recept, ki ga želi oceniti, obstaja in je dostopen.
+- Funkcionalnost ocenjevanja je omogočena.
+- Uporabnik še ni oddal ocene za ta recept, oziroma aplikacija omogoča spreminjanje že oddane ocene.
 ---------------------------------------------------------------------------------
-Stanje sistema po PU: 
+Stanje sistema po PU: Ocena uporabnika je shranjena in povezana z izbranim receptom.
+ Prikazana ocena recepta oziroma njegovo povprečje se ustrezno posodobi.
+  Če shranjevanje ni uspešno, ocena ostane nespremenjena.
 ---------------------------------------------------------------------------------
 Scenarij:
-1. 
+1. Uporabnik odpre aplikacijo.
+2. Uporabnik poišče in odpre recept, ki ga želi oceniti.
+3. Aplikacija prikaže podrobnosti recepta in možnost ocenjevanja.
+4. Uporabnik izbere oceno na ponujeni lestvici (npr. od 1 do 5 zvezdic).
+5. Uporabnik potrdi oddajo ocene s klikom na gumb »Oddaj oceno«.
+6. Aplikacija preveri, ali je uporabnik prijavljen.
+7. Aplikacija preveri, ali je ocena v dovoljenem razponu in ali je uporabnik že ocenil recept.
+8. Aplikacija shrani oceno v podatkovno bazo.
+9. Aplikacija posodobi prikaz ocene oziroma povprečne ocene recepta.
+10. Aplikacija prikaže sporočilo, da je bila ocena uspešno oddana.
 ---------------------------------------------------------------------------------
-Alternativni tokovi: 
+Alternativni tokovi:
+4.a Uporabnik spremeni izbrano oceno pred oddajo:
+   1. Uporabnik izbere drugo vrednost.
+   2. Aplikacija upošteva zadnjo izbrano vrednost ob oddaji.
 
+7.a Uporabnik je recept že ocenil, aplikacija pa omogoča urejanje ocene:
+   1. Aplikacija prikaže njegovo obstoječo oceno.
+   2. Uporabnik izbere novo oceno in jo potrdi.
+   3. Aplikacija posodobi obstoječo oceno namesto ustvarjanja nove.
+
+5.a Uporabnik prekliče ocenjevanje:
+   1. Uporabnik zapusti stran ali prekliče vnos.
+   2. Aplikacija ocene ne shrani; obstoječe stanje ostane nespremenjeno.
 ---------------------------------------------------------------------------------
 Izjeme:
-- 
+- Uporabniku poteče seja: aplikacija prikaže obvestilo, da je seja potekla,
+ in ga preusmeri na prijavo. Ocena se ne shrani.
+- Ocena ni iz dovoljenega razpona ali ni izbrana:
+ aplikacija prikaže opozorilo in zahteva veljavno oceno.
+- Recept ni več na voljo: aplikacija prikaže obvestilo, da recepta ni mogoče oceniti,
+ in uporabnika vrne na seznam receptov.
+- Podatkovna baza ni dosegljiva ali shranjevanje ne uspe: aplikacija prikaže obvestilo,
+da ocene ni bilo mogoče oddati; prikazana ocena recepta se ne spremeni.
+- Pri posodobitvi povprečne ocene pride do napake: aplikacija ohrani shranjeno oceno,
+ če je bila uspešno zapisana, in ob naslednji osvežitvi ponovno pridobi izračunano oceno.

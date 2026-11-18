@@ -7,6 +7,7 @@ Ivona Duraković Djordjević, Lana Horvat, Nejc Urisek
 ## Kazalo
 
 - [O projektu](#o-projektu)
+- [Uporabniške zgodbe](docs/user-stories.md)
 - [Vizija projekta](#vizija-projekta)
 - [Uporabljene tehnologije](#uporabljene-tehnologije)
 - [Struktura projekta](#struktura-projekta)

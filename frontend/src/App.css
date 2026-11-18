@@ -538,3 +538,16 @@ button:hover { transform: translateY(-1px); }
   .vnos-koraka { grid-template-columns: 1fr 38px; }
   .oznaka-koraka { grid-column: 1 / -1; padding-top: 0; }
 }
+.iskalnik-receptov {
+  width: 100%;
+  margin-bottom: 15px;
+}
+
+.iskalnik-receptov input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 16px;
+  box-sizing: border-box;
+}

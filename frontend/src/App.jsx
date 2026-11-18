@@ -117,6 +117,7 @@ function App() {
   const [meniKategorijOdprt, setMeniKategorijOdprt] = useState(false);
   const vnosSlike = useRef(null);
   const kategorijeRef = useRef(null);
+  const [iskanje, setIskanje] = useState("");
 
   //po uspešnem shranjevanju pripravi prazen obrazec za naslednji recept.
   function ponastaviObrazec() {
@@ -369,10 +370,35 @@ function App() {
   const vseVrsteObrokov = odstraniPodvojeneMoznosti([...vrsteObroka, ...recepti.map((item) => item.vrstaObroka).filter((vrsta) => vrsta && !vrsta.toLocaleLowerCase("sl-SI").startsWith("brunch"))]);
   const vseZahtevnosti = odstraniPodvojeneMoznosti(["Lahko", "Srednje", "Težko", ...recepti.map((item) => normalizirajZahtevnost(item.zahtevnost || "")).filter(Boolean)]);
   const filtriraniRecepti = recepti.filter((item) => {
-    const zahtevnostUstreza = !filtri.zahtevnost || normalizirajZahtevnost(item.zahtevnost || "").toLocaleLowerCase("sl-SI") === normalizirajZahtevnost(filtri.zahtevnost).toLocaleLowerCase("sl-SI");
-    const kategorijaUstreza = !filtri.kategorija || razdeliKategorije(item.kategorije).some((kategorija) => kljucKategorije(kategorija) === kljucKategorije(filtri.kategorija));
-    const obrokUstreza = !filtri.vrstaObroka || normalizirajVrstoObroka(item.vrstaObroka || "").toLocaleLowerCase("sl-SI") === normalizirajVrstoObroka(filtri.vrstaObroka).toLocaleLowerCase("sl-SI");
-    return zahtevnostUstreza && kategorijaUstreza && obrokUstreza;
+    const iskaniIzraz = iskanje.trim().toLocaleLowerCase("sl-SI");
+
+    const imeUstreza = (item.ime || "")
+        .toLocaleLowerCase("sl-SI")
+        .includes(iskaniIzraz);
+
+    const zahtevnostUstreza =
+        !filtri.zahtevnost ||
+        normalizirajZahtevnost(item.zahtevnost || "").toLocaleLowerCase("sl-SI") ===
+        normalizirajZahtevnost(filtri.zahtevnost).toLocaleLowerCase("sl-SI");
+
+    const kategorijaUstreza =
+        !filtri.kategorija ||
+        razdeliKategorije(item.kategorije).some(
+            (kategorija) =>
+                kljucKategorije(kategorija) === kljucKategorije(filtri.kategorija)
+        );
+
+    const obrokUstreza =
+        !filtri.vrstaObroka ||
+        normalizirajVrstoObroka(item.vrstaObroka || "").toLocaleLowerCase("sl-SI") ===
+        normalizirajVrstoObroka(filtri.vrstaObroka).toLocaleLowerCase("sl-SI");
+
+    return (
+        imeUstreza &&
+        zahtevnostUstreza &&
+        kategorijaUstreza &&
+        obrokUstreza
+    );
   });
   const zadnjaDvaRecepta = [...recepti].sort((a, b) => Number(b.id) - Number(a.id)).slice(0, 2);
   const prikazaniRecepti = aktivnaStran === "dodaj" ? zadnjaDvaRecepta : aktivnaStran === "vsi" ? filtriraniRecepti : recepti;
@@ -679,7 +705,17 @@ function App() {
         </div>
 
         {aktivnaStran === "vsi" && (
-          <div className="filtri-receptov" aria-label="Filtri receptov">
+            <>
+            <div className="iskalnik-receptov">
+              <input
+                  type="search"
+                  placeholder="Išči recept po imenu ..."
+                  value={iskanje}
+                  onChange={(event) => setIskanje(event.target.value)}
+              />
+            </div>
+
+            <div className="filtri-receptov" aria-label="Filtri receptov">
             <label>
               Zahtevnost
               <select value={filtri.zahtevnost} onChange={(event) => setFiltri((trenutni) => ({ ...trenutni, zahtevnost: event.target.value }))}>
@@ -701,8 +737,23 @@ function App() {
                 {vseVrsteObrokov.map((vrsta) => <option key={vrsta} value={vrsta}>{vrsta}</option>)}
               </select>
             </label>
-            {(filtri.zahtevnost || filtri.kategorija || filtri.vrstaObroka) && <button className="ponastavi-filtre" type="button" onClick={() => setFiltri({ zahtevnost: "", kategorija: "", vrstaObroka: "" })}>Počisti filtre</button>}
-          </div>
+              {(filtri.zahtevnost || filtri.kategorija || filtri.vrstaObroka || iskanje) && (
+                  <button
+                      className="ponastavi-filtre"
+                      type="button"
+                      onClick={() => {
+                        setFiltri({
+                          zahtevnost: "",
+                          kategorija: "",
+                          vrstaObroka: "",
+                        });
+                        setIskanje("");
+                      }}
+                  >
+                    Počisti filtre
+                  </button>
+              )}
+          </div></>
         )}
 
         {napaka && <p className="napaka" role="alert">{napaka}</p>}

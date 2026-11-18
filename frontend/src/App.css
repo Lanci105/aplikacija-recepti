@@ -54,6 +54,13 @@
 .meni-povezava.izbrana { color: #31563a; }
 .meni-dodaj { min-height: 44px; margin-left: 7px; border-radius: 999px; background: #426b4c; color: white; }
 .meni-dodaj:hover { background: #34583d; }
+.meni-prijava { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; margin-left: 7px; padding: 0 18px; border: 1px solid #dce6d9; border-radius: 999px; background: #f7faf5; color: #34583d; font-weight: 700; }
+.meni-prijava span { font-size: 1rem; }
+.meni-prijava:hover { border-color: #b8c9b5; background: #edf3e9; }
+.meni-uporabnik { display: flex; align-items: center; gap: 10px; margin-left: 9px; padding-left: 15px; border-left: 1px solid #e3e9df; }
+.meni-pozdrav { max-width: 150px; overflow: hidden; color: #526b57; font-size: 0.88rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+.meni-odjava { min-height: 40px; padding: 0 14px; background: transparent; color: #647267; font-size: 0.88rem; }
+.meni-odjava:hover { transform: none; background: #f4f7f1; }
 .gumb-meni { display: none; }
 
 body {
@@ -513,6 +520,9 @@ button:hover { transform: translateY(-1px); }
   .meni-povezave.odprt { display: flex; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e8eee5; }
   .meni-povezava { width: 100%; padding: 10px 12px; text-align: left; font-size: 0.9rem; }
   .meni-dodaj { width: 100%; min-height: 42px; margin: 4px 0 0; padding: 9px 12px; font-size: 0.9rem; }
+  .meni-prijava { width: 100%; justify-content: center; min-height: 42px; margin: 4px 0 0; }
+  .meni-uporabnik { justify-content: space-between; margin: 8px 0 0; padding: 10px 2px 0; border-top: 1px solid #e8eee5; border-left: 0; }
+  .meni-pozdrav { max-width: 65%; }
   .stran { padding-top: 36px; }
   .stran-domov { width: min(100% - 28px, 1180px); padding-top: 20px; }
   .stran-vsi { width: min(100% - 28px, 1280px); }

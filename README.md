@@ -1,6 +1,6 @@
 # Recepti
 
-Spletna aplikacija za shranjevanje in urejanje receptov. Projekt je sestavljen iz ločenega frontenda in backenda: Reactov frontend komunicira s Spring Boot REST API-jem, backend pa recepte shranjuje v PostgreSQL.
+Spletna aplikacija za shranjevanje in urejanje receptov. Projekt je sestavljen iz ločenega frontenda in backenda: Reactov frontend komunicira s Spring Boot REST API-jem, backend pa recepte in uporabniške račune shranjuje v PostgreSQL.
 
 Ivona Duraković Djordjević, Lana Horvat, Nejc Urisek
 
@@ -28,9 +28,10 @@ Glavne funkcionalnosti:
 - Filtriranje seznama po zahtevnosti, kategoriji in vrsti obroka v frontendu.
 - Več kategorij na enem receptu, seznam sestavin in oštevilčeni koraki priprave.
 - Slike receptov se v brskalniku pomanjšajo in shranijo skupaj z receptom.
+- Registracija, prijava in odjava uporabnika.
 - Swagger UI za pregled in preizkušanje REST API-ja.
 
-Projekt je namenjen lokalnemu zagonu in študijskemu prikazu. Trenutno nima uporabniških računov ali preverjanja prijave.
+Projekt je namenjen lokalnemu zagonu in študijskemu prikazu. Priljubljeni recepti, ocenjevanje in ločevanje receptov po uporabnikih še niso implementirani.
 
 ## Vizija projekta
 
@@ -54,7 +55,7 @@ Namen aplikacije je olajšati organizacijo receptov in načrtovanje priprave jed
 
 ### Obseg rešitve in morebitne omejitve
 
-Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Registracija in prijava, upravljanje priljubljenih receptov ter ocenjevanje so del vizije in v trenutni različici še niso implementirani. Prav tako aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
+Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Registracija, prijava in odjava so implementirane. Priljubljeni recepti, ocenjevanje ter ločevanje receptov po uporabnikih so še del vizije. Aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
 
 Fotografije receptov so odvisne od načina shranjevanja oziroma dostopnosti slik. Za uporabo aplikacije morajo biti zagnani zaledni strežnik, uporabniški vmesnik in podatkovna baza.
 
@@ -67,6 +68,7 @@ Fotografije receptov so odvisne od načina shranjevanja oziroma dostopnosti slik
 | Backend | Spring Web MVC | prek Spring Boot odvisnosti |
 | Backend | Spring Data JPA / Hibernate | prek Spring Boot odvisnosti |
 | Backend | Bean Validation | prek Spring Boot odvisnosti |
+| Backend | Spring Security Crypto | BCrypt za varno zgoščevanje gesel |
 | Backend | PostgreSQL | 16 |
 | Backend | Springdoc OpenAPI / Swagger UI | 3.0.3 |
 | Backend | Maven Wrapper | Maven 3.10.0; Maven ni treba namestiti posebej. |
@@ -89,7 +91,12 @@ Aplikacija_recepti/
 │   │   │   ├── BackendApplication.java   # Vstopna točka Spring Boot aplikacije
 │   │   │   ├── Recept.java               # JPA entiteta in polja recepta
 │   │   │   ├── ReceptController.java     # REST API in CRUD endpointi
-│   │   │   └── ReceptRepository.java     # Dostop do receptov prek JPA
+│   │   │   ├── ReceptRepository.java     # Dostop do receptov prek JPA
+│   │   │   ├── Uporabnik.java            # JPA entiteta uporabniškega računa
+│   │   │   ├── UporabnikRepository.java  # Dostop do uporabniških računov
+│   │   │   ├── AuthController.java       # Registracija, prijava in odjava
+│   │   │   ├── AuthNapakaHandler.java    # Berljiva sporočila za neveljavne vnose
+│   │   │   └── SpletnaKonfiguracija.java # CORS in uporaba seje iz frontenda
 │   │   ├── main/resources/
 │   │   │   └── application.properties    # Povezava z bazo in nastavitve backenda
 │   │   └── test/java/backend/            # Samodejni testi
@@ -104,6 +111,8 @@ Aplikacija_recepti/
 │   │   ├── assets/                       # Slike in drugi uvoženi viri
 │   │   ├── App.jsx                       # Strani, obrazec, filtri in klici API-ja
 │   │   ├── App.css                       # Slogi aplikacije in odzivna postavitev
+│   │   ├── AuthModal.jsx                 # Okno za prijavo in registracijo
+│   │   ├── AuthModal.css                 # Slogi prijavnega in registracijskega okna
 │   │   ├── index.css                     # Osnovni globalni slogi
 │   │   └── main.jsx                      # Vstopna točka React aplikacije
 │   ├── index.html                        # HTML stran z React korenskim elementom
@@ -114,7 +123,7 @@ Aplikacija_recepti/
 └── README.md                             # Opis projekta, tehnologij in navodila
 ```
 
-Podatki se shranjujejo v PostgreSQL tabelo `recept`. Hibernate tabelo ustvari oziroma posodobi na podlagi JPA entitete `Recept`.
+Recepti se shranjujejo v PostgreSQL tabelo `recept`, uporabniški računi pa v tabelo `uporabnik`. Hibernate tabeli ustvari oziroma posodobi na podlagi JPA entitet.
 
 ## Predpogoji
 
@@ -212,6 +221,12 @@ Ko backend teče, odpri [Swagger UI](http://localhost:8080/swagger-ui/index.html
 | `GET` | `/api/recepti/iskanje/cas?doMinut=30` | Vrne recepte do podanega časa priprave. |
 | `GET` | `/api/recepti/iskanje/kategorija?kategorija=...` | Išče po kategoriji. |
 | `GET` | `/api/recepti/iskanje/obrok?vrsta=...` | Išče po vrsti obroka. |
+| `POST` | `/api/auth/registracija` | Ustvari uporabniški račun. |
+| `POST` | `/api/auth/prijava` | Preveri podatke in prijavi uporabnika. |
+| `GET` | `/api/auth/jaz` | Vrne podatke trenutno prijavljenega uporabnika. |
+| `POST` | `/api/auth/odjava` | Odjavi uporabnika. |
+
+Gesla se shranjujejo kot BCrypt zgoščene vrednosti, ne kot navadno besedilo. Prijava uporablja strežniško sejo.
 
 ## Navodila za razvijalce
 

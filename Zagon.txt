@@ -28,6 +28,12 @@ tretji terminal:
 cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
 npm run dev
 
+uporabniško ime in geslo za stran: 
+horvatlana393@gmail.com
+geslo123
+
+ivona.djordjevic14@gmail.com
+geslo321
 
 
 Prikaz baze receptov: psql -d recepti -c "SELECT * FROM recept;"

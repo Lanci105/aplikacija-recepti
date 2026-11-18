@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from "react";
+import AuthModal from "./AuthModal";
 import "./App.css";
 
 //povezava z api in obrazci
 const API_URL = "http://localhost:8080/api/recepti";
+const AUTH_URL = "http://localhost:8080/api/auth";
 const kategorije = ["Vegansko", "Vegetarijansko", "Pescetarijansko", "Visokobeljakovinsko", "Visokokalorično", "Brez glutena", "Brez laktoze", "Drugo"];
 const vrsteObroka = ["Zajtrk", "Kosilo", "Večerja", "Sladica", "Prigrizek"];
 
@@ -37,8 +39,8 @@ function razdeliKategorije(besedilo = "") {
   return besedilo.split(/[,;\n]/).map((kategorija) => kategorija.trim()).filter(Boolean);
 }
 
-//random recepti za priljubljene
-function izberiNakljucneRecepte(seznam, stevilo = 3) {
+//Izbere štiri naključne recepte, ki so prikazani kot predlogi za navdih.
+function izberiNakljucneRecepte(seznam, stevilo = 4) {
   const premesani = [...seznam];
   for (let i = premesani.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -101,7 +103,7 @@ function odstraniPodvojeneKategorije(seznam) {
 function App() {
   //stanje aplikacije - recepti, obrazec, filtri, trenutno odprta stran in sporočila.
   const [recepti, setRecepti] = useState([]);
-  const [priljubljeni, setPriljubljeni] = useState([]);
+  const [receptiZaNavdih, setReceptiZaNavdih] = useState([]);
   const [filtri, setFiltri] = useState({ zahtevnost: "", kategorija: "", vrstaObroka: "" });
   const [recept, setRecept] = useState(prazenRecept);
   const [sestavine, setSestavine] = useState([""]);
@@ -110,6 +112,8 @@ function App() {
   const [odprtiRecept, setOdprtiRecept] = useState(null);
   const [aktivnaStran, setAktivnaStran] = useState("domov");
   const [meniMobilniOdprt, setMeniMobilniOdprt] = useState(false);
+  const [uporabnik, setUporabnik] = useState(null);
+  const [prijavnoOknoOdprto, setPrijavnoOknoOdprto] = useState(false);
   const [prejsnjaStran, setPrejsnjaStran] = useState("domov");
   const [napaka, setNapaka] = useState("");
   const [nalaganje, setNalaganje] = useState(true);
@@ -138,7 +142,7 @@ function App() {
       if (!odgovor.ok) throw new Error("Recepte ni bilo mogoče naložiti.");
       const nalozeniRecepti = await odgovor.json();
       setRecepti(nalozeniRecepti);
-      setPriljubljeni(izberiNakljucneRecepte(nalozeniRecepti, 4));
+      setReceptiZaNavdih(izberiNakljucneRecepte(nalozeniRecepti, 4));
     } catch {
       setNapaka("Povezava z backendom ni uspela. Preveri, ali ta deluje na portu 8080.");
     } finally {
@@ -148,8 +152,27 @@ function App() {
 
   //naloži recepte iz baze.
   useEffect(() => {
-    naloziRecepte();
+    const casovnik = window.setTimeout(() => { naloziRecepte(); }, 0);
+    return () => window.clearTimeout(casovnik);
   }, []);
+
+  //ob ponovnem odprtju strani preveri, ali je uporabnikova seja še veljavna.
+  useEffect(() => {
+    fetch(`${AUTH_URL}/jaz`, { credentials: "include" })
+      .then((odgovor) => odgovor.ok ? odgovor.json() : null)
+      .then((prijavljeni) => { if (prijavljeni) setUporabnik(prijavljeni); })
+      .catch(() => {});
+  }, []);
+
+  async function odjaviUporabnika() {
+    try {
+      await fetch(`${AUTH_URL}/odjava`, { method: "POST", credentials: "include" });
+      setUporabnik(null);
+      setMeniMobilniOdprt(false);
+    } catch {
+      setNapaka("Odjava ni uspela. Poskusi znova.");
+    }
+  }
 
   //meni kategorij zapre ob kliku zunaj njega ali tipki Escape.
   useEffect(() => {
@@ -418,8 +441,25 @@ function App() {
           <button className={aktivnaStran === "domov" && !odprtiRecept ? "meni-povezava izbrana" : "meni-povezava"} type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("domov"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Domov</button>
           <button className={aktivnaStran === "vsi" && !odprtiRecept ? "meni-povezava izbrana" : "meni-povezava"} type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("vsi"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Vsi recepti</button>
           <button className="meni-dodaj" type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("dodaj"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>＋ Dodaj svoj recept</button>
+          {uporabnik ? (
+            <div className="meni-uporabnik">
+              <span className="meni-pozdrav">Živjo, {uporabnik.ime}</span>
+              <button className="meni-odjava" type="button" onClick={odjaviUporabnika}>Odjava</button>
+            </div>
+          ) : (
+            <button className="meni-prijava" type="button" onClick={() => { setPrijavnoOknoOdprto(true); setMeniMobilniOdprt(false); }}>
+              <span aria-hidden="true">↗</span> Prijava
+            </button>
+          )}
         </div>
       </nav>
+
+      {prijavnoOknoOdprto && (
+        <AuthModal
+          onClose={() => setPrijavnoOknoOdprto(false)}
+          onLogin={(prijavljeni) => setUporabnik(prijavljeni)}
+        />
+      )}
 
       <main className={`stran ${aktivnaStran === "domov" && !odprtiRecept ? "stran-domov" : ""} ${aktivnaStran === "vsi" ? "stran-vsi" : ""}`}>
       {odprtiRecept ? (
@@ -481,7 +521,7 @@ function App() {
           </div>
 
           <div className="predlogi-kategorij">
-            <button type="button" onClick={() => odpriSekcijo("priljubljeni")}><span>♡</span><strong>Priljubljeni</strong><small>Recepti iz tvoje zbirke</small></button>
+            <button type="button" onClick={() => odpriSekcijo("navdih")}><span>✧</span><strong>Recepti za navdih</strong><small>Ideje, ki navdušijo</small></button>
             <button type="button" onClick={() => odpriSekcijo("beljakovinski")}><span>✦</span><strong>Visoko beljakovinski</strong><small>Nasitne ideje po treningu</small></button>
             <button type="button" onClick={() => odpriSekcijo("hitri")}><span>◷</span><strong>Hitro pripravljeno</strong><small>Manj časa v kuhinji</small></button>
           </div>
@@ -491,9 +531,9 @@ function App() {
           {!nalaganje && recepti.length === 0 && <div className="prazno-domov"><h2>Začni svojo zbirko</h2><p>Dodaj prvi recept in kmalu se bodo tukaj pojavile tvoje kuharske ideje.</p><button className="glavni-gumb" type="button" onClick={() => setAktivnaStran("dodaj")}>Dodaj svoj prvi recept</button></div>}
 
           {!nalaganje && recepti.length > 0 && <>
-            <section className="domov-razdelek" id="priljubljeni">
-              <div className="domov-razdelek-glava"><div><p className="oznaka">TVOJA ZBIRKA</p><h2>Priljubljeni recepti</h2></div><button type="button" onClick={() => setAktivnaStran("vsi")}>Vsi recepti <span>→</span></button></div>
-              <div className="domov-mreza">{priljubljeni.map((item) => <button className="domov-recept" type="button" key={item.id} onClick={() => odpriRecept(item)}>
+            <section className="domov-razdelek" id="navdih">
+              <div className="domov-razdelek-glava"><div><p className="oznaka">NAKLJUČNI IZBOR</p><h2>Recepti za navdih</h2></div><button type="button" onClick={() => setAktivnaStran("vsi")}>Vsi recepti <span>→</span></button></div>
+              <div className="domov-mreza">{receptiZaNavdih.map((item) => <button className="domov-recept" type="button" key={item.id} onClick={() => odpriRecept(item)}>
                 <div className="domov-recept-slika">{item.slika ? <img src={item.slika} alt="" /> : <span>✿</span>}</div>
                 <div className="domov-recept-info"><small>{item.vrstaObroka || "Domači recept"}</small><h3>{item.ime}</h3><p>{item.casPriprave ? `${item.casPriprave} min` : "Čas ni določen"} <span>·</span> {normalizirajZahtevnost(item.zahtevnost || "Za vsakogar")}</p></div>
                 <span className="domov-recept-puščica">↗</span>

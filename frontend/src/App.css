@@ -55,7 +55,7 @@
 .meni-dodaj { min-height: 44px; margin-left: 7px; border-radius: 999px; background: #426b4c; color: white; }
 .meni-dodaj:hover { background: #34583d; }
 .meni-prijava { display: inline-flex; min-height: 44px; align-items: center; gap: 8px; margin-left: 7px; padding: 0 18px; border: 1px solid #dce6d9; border-radius: 999px; background: #f7faf5; color: #34583d; font-weight: 700; }
-.meni-prijava span { font-size: 1rem; }
+.ikona-prijave { width: 19px; height: 19px; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .meni-prijava:hover { border-color: #b8c9b5; background: #edf3e9; }
 .meni-uporabnik { display: flex; align-items: center; gap: 10px; margin-left: 9px; padding-left: 15px; border-left: 1px solid #e3e9df; }
 .meni-pozdrav { max-width: 150px; overflow: hidden; color: #526b57; font-size: 0.88rem; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }

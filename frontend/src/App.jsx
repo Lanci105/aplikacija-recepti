@@ -448,7 +448,11 @@ function App() {
             </div>
           ) : (
             <button className="meni-prijava" type="button" onClick={() => { setPrijavnoOknoOdprto(true); setMeniMobilniOdprt(false); }}>
-              <span aria-hidden="true">↗</span> Prijava
+              <svg className="ikona-prijave" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5.5 20c.5-3.5 2.8-5.5 6.5-5.5s6 2 6.5 5.5" />
+              </svg>
+              Prijava
             </button>
           )}
         </div>

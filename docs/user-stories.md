@@ -114,19 +114,19 @@ Kot registrirana uporabnica se želim prijaviti v svoj račun, da lahko dostopam
 
 ### 1. Uspešna prijava
 
-- **Given:** Uporabnica ima ustvarjen račun in je na strani za prijavo.
+- **Given:** Uporabnik ima ustvarjen račun in je na strani za prijavo.
 - **When:** Vnese pravilen e-poštni naslov in geslo ter izbere »Prijava«.
 - **Then:** Sistem jo prijavi in prikaže stran z recepti oziroma stran, ki jo je želela odpreti.
 
 ### 2. Nepravilni podatki za prijavo
 
-- **Given:** Uporabnica je na strani za prijavo.
+- **Given:** Uporabnik je na strani za prijavo.
 - **When:** Vnese napačen e-poštni naslov ali geslo in odda obrazec.
 - **Then:** Sistem je ne prijavi in prikaže sporočilo, da podatki za prijavo niso pravilni.
 
 ### 3. Manjkajoči podatki
 
-- **Given:** Uporabnica je na strani za prijavo.
+- **Given:** Uporabnikje na strani za prijavo.
 - **When:** Pusti e-poštni naslov ali geslo prazno in odda obrazec.
 - **Then:** Sistem označi manjkajoče polje in uporabnice ne prijavi.
 
@@ -163,20 +163,20 @@ Kot prijavljena uporabnica želim urediti ime in e-poštni naslov svojega profil
 
 ### 1. Uspešna sprememba podatkov
 
-- **Given:** Uporabnica je prijavljena in odprla zavihek »Moj profil«.
+- **Given:** Uporabnik je prijavljena in odprla zavihek »Moj profil«.
 - **When:** Vnese veljavno ime in e-poštni naslov ter shrani spremembe.
 - **Then:** Sistem shrani podatke in na profilu prikaže posodobljeno ime ter e-poštni naslov.
 
 ### 2. Neveljaven e-poštni naslov
 
-- **Given:** Uporabnica ureja svoj profil.
+- **Given:** Uporabnik ureja svoj profil.
 - **When:** Vnese e-poštni naslov v neveljavni obliki in shrani spremembe.
 - **Then:** Sistem prikaže sporočilo o neveljavnem naslovu in podatkov ne spremeni.
 
 ### 3. E-poštni naslov je že zaseden
 
 - **Given:** Drug račun že uporablja vneseni e-poštni naslov.
-- **When:** Uporabnica shrani spremembo profila s tem naslovom.
+- **When:** Uporabnik shrani spremembo profila s tem naslovom.
 - **Then:** Sistem prikaže sporočilo, da je naslov že zaseden, in obdrži obstoječe podatke.
 
 ### 4. Sprememba gesla
@@ -209,25 +209,25 @@ Kot prijavljena uporabnica želim urediti ime in e-poštni naslov svojega profil
 
 ## Uporabniška zgodba
 
-Kot prijavljena uporabnica želim dodati komentar k receptu in po potrebi izbrisati svoj komentar, da lahko delim svoje izkušnje in popravim lastno objavo.
+Kot prijavljen uporabnik želim dodati komentar k receptu in po potrebi izbrisati svoj komentar, da lahko delim svoje izkušnje in popravim lastno objavo.
 
 ## Sprejemni kriteriji (Acceptance Criteria)
 
 ### 1. Uspešna objava komentarja
 
-- **Given:** Uporabnica je prijavljena in si ogleduje recept.
+- **Given:** Uporabnik je prijavljena in si ogleduje recept.
 - **When:** Vnese komentar z besedilom in ga objavi.
 - **Then:** Sistem shrani komentar ter ga prikaže pri receptu z imenom avtorice in datumom objave.
 
 ### 2. Prazno ali predolgo besedilo
 
-- **Given:** Uporabnica je odprla obrazec za komentar.
+- **Given:** Uporabnik je odprl obrazec za komentar.
 - **When:** Odda prazen komentar ali besedilo, daljše od 1500 znakov.
 - **Then:** Sistem komentarja ne shrani in prikaže ustrezno napako.
 
 ### 3. Uspešen izbris lastnega komentarja
 
-- **Given:** Prijavljena uporabnica je avtorica prikazanega komentarja.
+- **Given:** Prijavljen uporabnik je avtor prikazanega komentarja.
 - **When:** Izbere »Izbriši komentar« in potrdi izbris.
 - **Then:** Sistem izbriše komentar in ga odstrani s seznama pri receptu.
 

@@ -30,7 +30,7 @@ Glavne funkcionalnosti:
 - Slike receptov se v brskalniku pomanjšajo in shranijo skupaj z receptom.
 - Registracija, prijava in odjava uporabnika.
 - Urejanje profila: sprememba imena in e-pošte ter neobvezna sprememba gesla.
-- Dodajanje komentarjev in ocen od 1 do 5 zvezdic ter prikaz povprečne ocene.
+- Dodajanje komentarjev in ocen od 1 (najnižja) do 5 (najvišja) zvezdic ter prikaz povprečne ocene.
 - Prijavljeni uporabnik lahko izbriše svoje komentarje.
 - Potrditev pred brisanjem in obvestila po uspešnih spremembah.
 - Swagger UI za pregled in preizkušanje REST API-ja.
@@ -54,7 +54,7 @@ Namen aplikacije je olajšati organizacijo receptov in načrtovanje priprave jed
 - Iskanje receptov po imenu in filtriranje glede na njihove lastnosti; iskanje je na voljo tudi obiskovalcem.
 - Registracija obiskovalca in prijava v uporabniški račun.
 - Urejanje osebnega profila, vključno z neobvezno spremembo gesla.
-- Dodajanje komentarjev in ocen od 1 do 5 zvezdic ter prikaz povprečne ocene; za oddajo je potrebna prijava.
+- Dodajanje komentarjev z oceno na lestvici od 1 (najnižja) do 5 (najvišja) zvezdic ter prikaz povprečne ocene; za oddajo je potrebna prijava.
 - Shranjevanje receptov v podatkovni bazi PostgreSQL.
 - Uporaba spletnega vmesnika za delo z recepti in REST API-ja za povezavo med vmesnikom in zaledjem.
 
@@ -291,7 +291,7 @@ Besednjak pojasnjuje izraze, ki se pojavljajo v aplikaciji za recepte in njenih 
 - **Prijava** — postopek, pri katerem registrirani uporabnik z e-poštnim naslovom in geslom dostopa do svojega računa.
 - **Prijavljen uporabnik** — uporabnik, ki je uspešno opravil prijavo. Urejanje profila ter oddaja ali brisanje lastnega komentarja in ocene so namenjeni prijavljenim uporabnikom.
 - **Uporabniška seja** — obdobje, v katerem si aplikacija zapomni, da je uporabnik prijavljen. Po poteku seje se mora uporabnik ponovno prijaviti.
-- **Ocena recepta** — vrednost od ene do petih zvezdic, s katero prijavljeni uporabnik izrazi svoje mnenje o receptu.
+- **Ocena recepta** — vrednost na lestvici od 1 (najnižja) do 5 (najvišja) zvezdic, s katero prijavljeni uporabnik izrazi svoje mnenje o receptu.
 - **Povprečna ocena** — povprečje oddanih ocen recepta, prikazano kot pomoč pri izbiri jedi.
 
 ## Stanje funkcionalnosti

@@ -205,7 +205,7 @@ Kot prijavljena uporabnica želim urediti ime in e-poštni naslov svojega profil
 # US-05: Dodajanje in brisanje komentarja
 
 **ID:** US-05
-**Odgovorni član:** Lana Horvat
+**Odgovorni član:** Ivona Duraković Djordjević
 
 ## Uporabniška zgodba
 
@@ -249,32 +249,32 @@ Kot prijavljena uporabnica želim dodati komentar k receptu in po potrebi izbris
 
 | ID | Naziv naloge | Opis | Odgovorni |
 |---|---|---|---|
-| TASK-09 | Obrazec in prikaz komentarjev | Dodajanje komentarja na strani recepta ter prikaz avtorja, datuma in besedila. | Lana Horvat |
-| TASK-10 | Brisanje lastnega komentarja | Omogočanje izbrisa komentarja avtorju ter zavrnitev izbrisa komentarjev drugih uporabnikov. | Lana Horvat |
+| TASK-09 | Obrazec in prikaz komentarjev | Dodajanje komentarja na strani recepta ter prikaz avtorja, datuma in besedila. | Ivona Duraković Djordjević |
+| TASK-10 | Brisanje lastnega komentarja | Omogočanje izbrisa komentarja avtorju ter zavrnitev izbrisa komentarjev drugih uporabnikov. | Ivona Duraković Djordjević |
 
 ---
 
 # US-06: Ocenjevanje recepta
 
 **ID:** US-06
-**Odgovorni član:** Nejc Urisek
+**Odgovorni član:** Ivona Duraković Djordjević
 
 ## Uporabniška zgodba
 
-Kot prijavljen uporabnik želim oceniti recept z eno do petimi zvezdicami, da lahko izrazim svoje mnenje in pomagam drugim pri izbiri jedi.
+Kot prijavljen uporabnik želim oceniti recept z lestvico od 1 do 5 zvezdic, kjer je 1 najnižja in 5 najvišja ocena, da lahko izrazim svoje mnenje in pomagam drugim pri izbiri jedi.
 
 ## Sprejemni kriteriji (Acceptance Criteria)
 
 ### 1. Uspešna ocena
 
 - **Given:** Uporabnik je prijavljen in si ogleduje recept.
-- **When:** Izbere oceno od ene do petih zvezdic in objavi obrazec.
+- **When:** Izbere oceno od 1 do 5 zvezdic (1 je najnižja, 5 najvišja) in objavi obrazec.
 - **Then:** Sistem shrani oceno in jo prikaže ob njegovem komentarju.
 
 ### 2. Neveljavna ocena
 
 - **Given:** Uporabnik oddaja oceno recepta.
-- **When:** Oddana ocena je manjša od 1 ali večja od 5.
+- **When:** Vnese oceno, nižjo od 1 ali višjo od 5.
 - **Then:** Sistem zavrne vnos in ne shrani ocene.
 
 ### 3. Prikaz povprečne ocene
@@ -291,7 +291,7 @@ Kot prijavljen uporabnik želim oceniti recept z eno do petimi zvezdicami, da la
 
 ## Podrobnosti implementacije
 
-- Ocena je celo število od 1 do 5 in je shranjena skupaj s komentarjem uporabnika.
+- Ocena je celo število od 1 do 5; 1 pomeni najnižjo, 5 pa najvišjo oceno. Shranjena je skupaj s komentarjem uporabnika.
 - Backend zavrne oceno izven dovoljenega razpona.
 - Frontend prikaže izbrane zvezdice pri vsakem komentarju ter izračunano povprečje in število ocen.
 - Povprečje se izračuna iz ocen trenutno prikazanih komentarjev.
@@ -300,5 +300,5 @@ Kot prijavljen uporabnik želim oceniti recept z eno do petimi zvezdicami, da la
 
 | ID | Naziv naloge | Opis | Odgovorni |
 |---|---|---|---|
-| TASK-11 | Izbira ocene | Dodajanje izbire ocene od 1 do 5 v obrazec za komentar in prikaz zvezdic. | Nejc Urisek |
-| TASK-12 | Preverjanje in prikaz povprečja | Preverjanje dovoljenega razpona ocene ter prikaz povprečne ocene in števila ocen pri receptu. | Nejc Urisek |
+| TASK-11 | Izbira ocene | Dodajanje izbire ocene od 1 do 5 v obrazec za komentar in prikaz zvezdic. | Ivona Duraković Djordjević |
+| TASK-12 | Preverjanje in prikaz povprečja | Preverjanje dovoljenega razpona ocene ter prikaz povprečne ocene in števila ocen pri receptu. | Ivona Duraković Djordjević |

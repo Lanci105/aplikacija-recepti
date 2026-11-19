@@ -30,14 +30,12 @@ Glavne funkcionalnosti:
 - Slike receptov se v brskalniku pomanjšajo in shranijo skupaj z receptom.
 - Registracija, prijava in odjava uporabnika.
 - Urejanje profila: sprememba imena in e-pošte ter neobvezna sprememba gesla.
-- Osebni seznam priljubljenih receptov, shranjen v podatkovni bazi.
 - Dodajanje komentarjev in ocen od 1 do 5 zvezdic ter prikaz povprečne ocene.
-- Prikaz avtorja recepta; urejanje in brisanje sta dovoljena samo avtorju.
-- Avtor komentarja lahko odstrani svoj komentar, avtor recepta pa lahko moderira komentarje pri svojem receptu.
+- Prijavljeni uporabnik lahko izbriše svoje komentarje.
 - Potrditev pred brisanjem in obvestila po uspešnih spremembah.
 - Swagger UI za pregled in preizkušanje REST API-ja.
 
-Projekt je namenjen lokalnemu zagonu in študijskemu prikazu. Za dodajanje receptov, urejanje profila, priljubljene, komentarje in ocene mora biti uporabnik prijavljen. Starejši recepti brez določenega avtorja ostanejo vidni, vendar jih ni mogoče urejati ali izbrisati.
+Projekt je namenjen lokalnemu zagonu in študijskemu prikazu. Za urejanje profila, oddajo komentarja ali ocene mora biti uporabnik prijavljen.
 
 ## Vizija projekta
 
@@ -55,16 +53,14 @@ Namen aplikacije je olajšati organizacijo receptov in načrtovanje priprave jed
 - Izbira kategorij in vrste obroka.
 - Iskanje receptov po imenu in filtriranje glede na njihove lastnosti; iskanje je na voljo tudi obiskovalcem.
 - Registracija obiskovalca in prijava v uporabniški račun.
-- Dodajanje receptov med priljubljene in odstranjevanje iz priljubljenih; seznam se shrani za posameznega uporabnika.
 - Urejanje osebnega profila, vključno z neobvezno spremembo gesla.
 - Dodajanje komentarjev in ocen od 1 do 5 zvezdic ter prikaz povprečne ocene; za oddajo je potrebna prijava.
-- Lastništvo receptov: avtor je prikazan ob receptu, urejanje in brisanje pa sta dovoljena samo avtorju.
 - Shranjevanje receptov v podatkovni bazi PostgreSQL.
 - Uporaba spletnega vmesnika za delo z recepti in REST API-ja za povezavo med vmesnikom in zaledjem.
 
 ### Obseg rešitve in morebitne omejitve
 
-Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Implementirani so registracija, prijava, odjava, urejanje profila, osebni priljubljeni recepti, komentarji in ocene ter preverjanje lastništva pri urejanju in brisanju receptov. Aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
+Aplikacija omogoča upravljanje receptov in njihovo pregledovanje v okviru enega projekta. Vključuje uporabniški vmesnik, zaledni del v Spring Bootu in podatkovno bazo PostgreSQL. Implementirani so registracija, prijava, odjava, urejanje profila, komentarji in ocene receptov. Aplikacija ne omogoča spletnega naročanja sestavin, samodejnega izračuna hranilnih vrednosti ali uvoza receptov z drugih spletnih strani.
 
 Fotografije receptov so odvisne od načina shranjevanja oziroma dostopnosti slik. Za uporabo aplikacije morajo biti zagnani zaledni strežnik, uporabniški vmesnik in podatkovna baza.
 
@@ -104,7 +100,6 @@ Aplikacija_recepti/
 │   │   │   ├── Uporabnik.java            # JPA entiteta uporabniškega računa
 │   │   │   ├── UporabnikRepository.java  # Dostop do uporabniških računov
 │   │   │   ├── AuthController.java       # Registracija, prijava, profil in odjava
-│   │   │   ├── PriljubljeniController.java # Osebni seznam priljubljenih
 │   │   │   ├── Komentar.java             # Komentar in ocena recepta
 │   │   │   ├── KomentarController.java   # Prikaz in upravljanje komentarjev
 │   │   │   ├── KomentarRepository.java   # Dostop do komentarjev
@@ -239,12 +234,9 @@ Ko backend teče, odpri [Swagger UI](http://localhost:8080/swagger-ui/index.html
 | `POST` | `/api/auth/prijava` | Preveri podatke in prijavi uporabnika. |
 | `GET` | `/api/auth/jaz` | Vrne podatke trenutno prijavljenega uporabnika. |
 | `PUT` | `/api/auth/jaz` | Posodobi ime in e-pošto; geslo spremeni, če sta podani trenutno in novo geslo. |
-| `GET` | `/api/auth/priljubljeni` | Vrne priljubljene recepte prijavljenega uporabnika. |
-| `PUT` | `/api/auth/priljubljeni/{receptId}` | Doda recept med priljubljene. |
-| `DELETE` | `/api/auth/priljubljeni/{receptId}` | Odstrani recept iz priljubljenih. |
 | `GET` | `/api/recepti/{receptId}/komentarji` | Vrne komentarje in ocene recepta. |
 | `POST` | `/api/recepti/{receptId}/komentarji` | Doda komentar in oceno prijavljenega uporabnika. |
-| `DELETE` | `/api/komentarji/{id}` | Izbriše komentar; dovoljenje ima njegov avtor ali avtor recepta. |
+| `DELETE` | `/api/recepti/{receptId}/komentarji/{komentarId}` | Izbriše komentar prijavljenega uporabnika, če je njegov avtor. |
 | `POST` | `/api/auth/odjava` | Odjavi uporabnika. |
 
 Gesla se shranjujejo kot BCrypt zgoščene vrednosti, ne kot navadno besedilo. Prijava uporablja strežniško sejo. Za osebne funkcije mora zahteva vključevati prijavno sejo. Uporabniških gesel ne shranjuj v dokumentacijo ali Git.
@@ -270,7 +262,7 @@ Pri ustvarjanju repozitorija na GitHubu izberi vidnost **Public**. V **Settings 
 
 # Besednjak domenskih izrazov
 
-Besednjak pojasnjuje izraze, ki se pojavljajo v aplikaciji za recepte in njenih primerih uporabe. Izrazi, ki se nanašajo na uporabniške račune, priljubljene recepte in ocenjevanje, opisujejo funkcionalnosti aplikacije.
+Besednjak pojasnjuje izraze, ki se pojavljajo v aplikaciji za recepte in njenih primerih uporabe. Izrazi, ki se nanašajo na uporabniške račune, komentarje in ocenjevanje, opisujejo funkcionalnosti aplikacije.
 
 ## Recepti in priprava jedi
 
@@ -297,10 +289,8 @@ Besednjak pojasnjuje izraze, ki se pojavljajo v aplikaciji za recepte in njenih 
 - **Uporabniški račun** — osebni zapis uporabnika, ustvarjen z registracijo. Primeri uporabe predvidevajo podatke, kot so ime, e-poštni naslov in geslo.
 - **Registracija** — postopek ustvarjanja novega uporabniškega računa.
 - **Prijava** — postopek, pri katerem registrirani uporabnik z e-poštnim naslovom in geslom dostopa do svojega računa.
-- **Prijavljen uporabnik** — uporabnik, ki je uspešno opravil prijavo. Urejanje profila, shranjevanje priljubljenih ter oddaja komentarja in ocene so namenjeni prijavljenim uporabnikom.
+- **Prijavljen uporabnik** — uporabnik, ki je uspešno opravil prijavo. Urejanje profila ter oddaja ali brisanje lastnega komentarja in ocene so namenjeni prijavljenim uporabnikom.
 - **Uporabniška seja** — obdobje, v katerem si aplikacija zapomni, da je uporabnik prijavljen. Po poteku seje se mora uporabnik ponovno prijaviti.
-- **Priljubljeni recept** — recept, ki ga prijavljeni uporabnik shrani na svoj osebni seznam, da ga pozneje lažje najde. Odstranitev s seznama priljubljenih recepta ne izbriše iz zbirke.
-- **Seznam priljubljenih** — seznam receptov, ki jih je posamezni uporabnik označil kot priljubljene.
 - **Ocena recepta** — vrednost od ene do petih zvezdic, s katero prijavljeni uporabnik izrazi svoje mnenje o receptu.
 - **Povprečna ocena** — povprečje oddanih ocen recepta, prikazano kot pomoč pri izbiri jedi.
 
@@ -308,7 +298,7 @@ Besednjak pojasnjuje izraze, ki se pojavljajo v aplikaciji za recepte in njenih 
 
 Iskanje po imenu ter filtri po času priprave, kategoriji in vrsti obroka so na voljo v zalednem delu. V uporabniškem vmesniku so na voljo filtri za zahtevnost, kategorijo in vrsto obroka. Iskalno polje po imenu še ni izdelano.
 
-Komentarje in ocene lahko dodajo prijavljeni uporabniki; brisanje komentarja je omejeno na njegovega avtorja ali avtorja recepta.
+Komentarje in ocene lahko dodajo prijavljeni uporabniki. Prijavljeni uporabnik lahko izbriše svoj komentar. Profil lahko ureja samo njegov lastnik.
 
 ## Diagram primerov uporabe
 ![Diagram primerov uporabe](backend/Slike/diagram.png)

@@ -147,3 +147,158 @@ Kot registrirana uporabnica se želim prijaviti v svoj račun, da lahko dostopam
 ## INVEST
 
 Zgodba je vrednostna, omejena na prijavo obstoječe uporabnice, ocenljiva in preverljiva z navedenimi kriteriji. Od registracije je ločena: prijavo je mogoče razviti in preverjati z že obstoječim testnim računom.
+
+---
+
+# US-04: Urejanje uporabniškega profila
+
+**ID:** US-04
+**Odgovorni član:** Ivona Duraković Djordjević
+
+## Uporabniška zgodba
+
+Kot prijavljena uporabnica želim urediti ime in e-poštni naslov svojega profila, da so podatki v računu pravilni.
+
+## Sprejemni kriteriji (Acceptance Criteria)
+
+### 1. Uspešna sprememba podatkov
+
+- **Given:** Uporabnica je prijavljena in odprla zavihek »Moj profil«.
+- **When:** Vnese veljavno ime in e-poštni naslov ter shrani spremembe.
+- **Then:** Sistem shrani podatke in na profilu prikaže posodobljeno ime ter e-poštni naslov.
+
+### 2. Neveljaven e-poštni naslov
+
+- **Given:** Uporabnica ureja svoj profil.
+- **When:** Vnese e-poštni naslov v neveljavni obliki in shrani spremembe.
+- **Then:** Sistem prikaže sporočilo o neveljavnem naslovu in podatkov ne spremeni.
+
+### 3. E-poštni naslov je že zaseden
+
+- **Given:** Drug račun že uporablja vneseni e-poštni naslov.
+- **When:** Uporabnica shrani spremembo profila s tem naslovom.
+- **Then:** Sistem prikaže sporočilo, da je naslov že zaseden, in obdrži obstoječe podatke.
+
+### 4. Sprememba gesla
+
+- **Given:** Uporabnica je v obrazcu za urejanje profila izbrala tudi spremembo gesla.
+- **When:** Vnese pravilno trenutno geslo in veljavno novo geslo.
+- **Then:** Sistem shrani novo geslo; če je trenutno geslo napačno, spremembe gesla ne shrani in prikaže napako.
+
+## Podrobnosti implementacije
+
+- V navigaciji je zavihek »Moj profil«, ki je viden prijavljenemu uporabniku.
+- Profilni zaslon prikaže ime in e-pošto ter odpre obrazec za urejanje.
+- Frontend pošlje spremembe v zaledje; prijava se preveri prek uporabniške seje.
+- Backend preveri obvezne podatke, obliko in enoličnost e-pošte.
+- Sprememba gesla je neobvezna; ob spremembi se zahteva trenutno geslo, novo geslo pa se shrani v zgoščeni obliki.
+
+## GitHub – nalogi
+
+| ID | Naziv naloge | Opis | Odgovorni |
+|---|---|---|---|
+| TASK-07 | Profilni zavihek in obrazec | Prikaz profila ter obrazca za spremembo imena, e-pošte in neobvezno gesla. | Ivona Duraković Djordjević |
+| TASK-08 | Shranjevanje sprememb profila | Preverjanje prijave, veljavnosti in enoličnosti podatkov ter shranjevanje posodobljenega profila. | Ivona Duraković Djordjević |
+
+---
+
+# US-05: Dodajanje in brisanje komentarja
+
+**ID:** US-05
+**Odgovorni član:** Lana Horvat
+
+## Uporabniška zgodba
+
+Kot prijavljena uporabnica želim dodati komentar k receptu in po potrebi izbrisati svoj komentar, da lahko delim svoje izkušnje in popravim lastno objavo.
+
+## Sprejemni kriteriji (Acceptance Criteria)
+
+### 1. Uspešna objava komentarja
+
+- **Given:** Uporabnica je prijavljena in si ogleduje recept.
+- **When:** Vnese komentar z besedilom in ga objavi.
+- **Then:** Sistem shrani komentar ter ga prikaže pri receptu z imenom avtorice in datumom objave.
+
+### 2. Prazno ali predolgo besedilo
+
+- **Given:** Uporabnica je odprla obrazec za komentar.
+- **When:** Odda prazen komentar ali besedilo, daljše od 1500 znakov.
+- **Then:** Sistem komentarja ne shrani in prikaže ustrezno napako.
+
+### 3. Uspešen izbris lastnega komentarja
+
+- **Given:** Prijavljena uporabnica je avtorica prikazanega komentarja.
+- **When:** Izbere »Izbriši komentar« in potrdi izbris.
+- **Then:** Sistem izbriše komentar in ga odstrani s seznama pri receptu.
+
+### 4. Poskus izbrisa tujega komentarja
+
+- **Given:** Prijavljena uporabnica ni avtorica komentarja.
+- **When:** Poskusi izbrisati ta komentar.
+- **Then:** Sistem izbrisa ne dovoli in komentar ostane prikazan.
+
+## Podrobnosti implementacije
+
+- Komentar vsebuje besedilo, avtorja, recept in čas objave.
+- Za dodajanje in brisanje komentarja mora biti uporabnik prijavljen.
+- Obrazec in seznam komentarjev sta na strani podrobnosti recepta.
+- Backend preveri, da je uporabnik ob brisanju avtor komentarja.
+- Pri brisanju recepta se odstranijo tudi njegovi komentarji.
+
+## GitHub – nalogi
+
+| ID | Naziv naloge | Opis | Odgovorni |
+|---|---|---|---|
+| TASK-09 | Obrazec in prikaz komentarjev | Dodajanje komentarja na strani recepta ter prikaz avtorja, datuma in besedila. | Lana Horvat |
+| TASK-10 | Brisanje lastnega komentarja | Omogočanje izbrisa komentarja avtorju ter zavrnitev izbrisa komentarjev drugih uporabnikov. | Lana Horvat |
+
+---
+
+# US-06: Ocenjevanje recepta
+
+**ID:** US-06
+**Odgovorni član:** Nejc Urisek
+
+## Uporabniška zgodba
+
+Kot prijavljen uporabnik želim oceniti recept z eno do petimi zvezdicami, da lahko izrazim svoje mnenje in pomagam drugim pri izbiri jedi.
+
+## Sprejemni kriteriji (Acceptance Criteria)
+
+### 1. Uspešna ocena
+
+- **Given:** Uporabnik je prijavljen in si ogleduje recept.
+- **When:** Izbere oceno od ene do petih zvezdic in objavi obrazec.
+- **Then:** Sistem shrani oceno in jo prikaže ob njegovem komentarju.
+
+### 2. Neveljavna ocena
+
+- **Given:** Uporabnik oddaja oceno recepta.
+- **When:** Oddana ocena je manjša od 1 ali večja od 5.
+- **Then:** Sistem zavrne vnos in ne shrani ocene.
+
+### 3. Prikaz povprečne ocene
+
+- **Given:** Receptu je bila oddana vsaj ena ocena.
+- **When:** Uporabnik odpre podrobnosti recepta.
+- **Then:** Sistem prikaže povprečje ocen in število oddanih ocen.
+
+### 4. Ocena brez prijave
+
+- **Given:** Obiskovalec ni prijavljen in si ogleduje recept.
+- **When:** Želi oddati oceno.
+- **Then:** Sistem mu ponudi prijavo in ocene ne shrani.
+
+## Podrobnosti implementacije
+
+- Ocena je celo število od 1 do 5 in je shranjena skupaj s komentarjem uporabnika.
+- Backend zavrne oceno izven dovoljenega razpona.
+- Frontend prikaže izbrane zvezdice pri vsakem komentarju ter izračunano povprečje in število ocen.
+- Povprečje se izračuna iz ocen trenutno prikazanih komentarjev.
+
+## GitHub – nalogi
+
+| ID | Naziv naloge | Opis | Odgovorni |
+|---|---|---|---|
+| TASK-11 | Izbira ocene | Dodajanje izbire ocene od 1 do 5 v obrazec za komentar in prikaz zvezdic. | Nejc Urisek |
+| TASK-12 | Preverjanje in prikaz povprečja | Preverjanje dovoljenega razpona ocene ter prikaz povprečne ocene in števila ocen pri receptu. | Nejc Urisek |

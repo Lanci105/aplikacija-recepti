@@ -63,9 +63,8 @@ public class KomentarController {
         Komentar komentar = komentarRepository.findByIdAndRecept_Id(komentarId, receptId).orElse(null);
         if (komentar == null) return ResponseEntity.notFound().build();
         boolean avtorKomentarja = komentar.getAvtor().getId().equals(uporabnik.getId());
-        boolean avtorRecepta = komentar.getRecept().getAvtor() != null && komentar.getRecept().getAvtor().getId().equals(uporabnik.getId());
-        if (!avtorKomentarja && !avtorRecepta) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("sporocilo", "Izbrišeš lahko samo svoj komentar ali komentar na svojem receptu."));
+        if (!avtorKomentarja) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of("sporocilo", "Izbrišeš lahko samo svoj komentar."));
         }
         komentarRepository.delete(komentar);
         return ResponseEntity.noContent().build();

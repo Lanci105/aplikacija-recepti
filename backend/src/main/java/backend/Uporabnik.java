@@ -5,13 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
 
 // JPA entiteta za račun; shrani ime, enolični e-poštni naslov in zgoščeno geslo.
 @Entity
@@ -34,13 +28,6 @@ public class Uporabnik {
     // Hrani BCrypt zgoščeno vrednost, nikoli gesla v navadnem besedilu.
     @Column(nullable = false, name = "geslo_hash", length = 100)
     private String gesloHash;
-
-    @ManyToMany
-    @JoinTable(name = "uporabnik_priljubljen_recept",
-            joinColumns = @JoinColumn(name = "uporabnik_id"),
-            inverseJoinColumns = @JoinColumn(name = "recept_id"))
-    @OrderBy("id DESC")
-    private Set<Recept> priljubljeniRecepti = new HashSet<>();
 
     protected Uporabnik() {
     }
@@ -66,8 +53,6 @@ public class Uporabnik {
     public String getGesloHash() {
         return gesloHash;
     }
-
-    public Set<Recept> getPriljubljeniRecepti() { return priljubljeniRecepti; }
 
     public void setIme(String ime) { this.ime = ime; }
 

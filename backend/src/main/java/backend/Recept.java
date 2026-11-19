@@ -5,12 +5,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Size;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity //razred označimo kot entiteto da ga lahko shrnaimo v zbirko
 public class Recept {
@@ -35,11 +30,6 @@ public class Recept {
     private String zahtevnost;
     private String kategorije;
     private String vrstaObroka;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avtor_id")
-    @JsonIgnore
-    private Uporabnik avtor;
 
     public Recept() {
     }
@@ -127,14 +117,4 @@ public class Recept {
     public void setVrstaObroka(String vrstaObroka) {
         this.vrstaObroka = vrstaObroka;
     }
-
-    public Uporabnik getAvtor() { return avtor; }
-
-    public void setAvtor(Uporabnik avtor) { this.avtor = avtor; }
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public Long getAvtorId() { return avtor == null ? null : avtor.getId(); }
-
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
-    public String getAvtorIme() { return avtor == null ? null : avtor.getIme(); }
 }

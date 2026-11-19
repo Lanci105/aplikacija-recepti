@@ -324,8 +324,6 @@ input:focus, textarea:focus, select:focus {
 
 .gumbi-kartice, .gumbi-obrazca { justify-content: center; }
 .gumbi-kartice { margin-top: auto; padding-top: 16px; }
-.gumb-priljubljeno { min-height: 40px; border: 1px solid #e6d9d4; background: #fff9f7; color: #9b5548; }
-.gumb-priljubljeno:hover, .gumb-priljubljeno.izbrano { border-color: #e8b8aa; background: #fff0eb; color: #a4493a; }
 
 button {
   min-height: 42px;
@@ -511,8 +509,6 @@ button:hover { transform: translateY(-1px); }
 .profil-identiteta { min-width: 0; flex: 1; }
 .profil-identiteta h2 { margin: 0; color: #2c4733; font-family: Georgia, "Times New Roman", serif; font-size: 1.45rem; }
 .profil-identiteta p { margin: 6px 0 0; color: #718075; overflow-wrap: anywhere; }
-.profil-priljubljeni { margin-top: 38px; }
-.profil-priljubljeni .prazno { padding: 36px 20px; text-align: center; }
 
 .napaka { border-radius: 10px; background: #fff1ed; color: #a54836; padding: 12px 14px; }
 
@@ -575,8 +571,6 @@ button:hover { transform: translateY(-1px); }
   box-sizing: border-box;
 }
 
-.avtor-kartice { margin: 8px 0 0; color: #7b887d; font-size: 0.82rem; }
-.avtor-recepta { margin: 8px 0; color: #718075; font-size: 0.9rem; }
 .povprecna-ocena { margin: 10px 0; color: #aa7734; font-weight: 750; }
 .povprecna-ocena span { color: #829084; font-size: 0.82rem; font-weight: 500; }
 .razdelek-komentarji { margin-top: 38px; }

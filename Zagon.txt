@@ -43,8 +43,8 @@ V brskalniku odpri naslov, ki ga izpiše Vite, običajno http://localhost:5173.
 Prijava, profil in osebne funkcije
 - Ustvari račun prek gumba Prijava/Registracija ali se prijavi s svojim računom.
 - Vsak uporabnik naj uporablja svoje geslo. Gesel ne zapisuj v to datoteko ali v Git.
-- Prijava je potrebna za dodajanje receptov, urejanje profila, shranjevanje priljubljenih ter oddajo komentarjev in ocen.
-- Recept lahko ureja ali izbriše samo njegov avtor. Starejši recepti brez avtorja ostanejo vidni, vendar jih ni mogoče urejati ali izbrisati.
+- Za urejanje profila, oddajo komentarja ali ocene ter brisanje lastnega komentarja se prijavi.
+- Recepti se lahko dodajajo, urejajo in brišejo kot doslej.
 
 Dodatno
 - Swagger API dokumentacija: http://localhost:8080/swagger-ui/index.html

@@ -114,7 +114,6 @@ function App() {
   const [aktivnaStran, setAktivnaStran] = useState("domov");
   const [meniMobilniOdprt, setMeniMobilniOdprt] = useState(false);
   const [uporabnik, setUporabnik] = useState(null);
-  const [priljubljeniRecepti, setPriljubljeniRecepti] = useState([]);
   const [komentarji, setKomentarji] = useState([]);
   const [vsebinaKomentarja, setVsebinaKomentarja] = useState("");
   const [ocenaKomentarja, setOcenaKomentarja] = useState(5);
@@ -171,18 +170,6 @@ function App() {
       .catch(() => {});
   }, []);
 
-  useEffect(() => {
-    if (!uporabnik) {
-      setPriljubljeniRecepti([]);
-      return undefined;
-    }
-    let preklicano = false;
-    fetch(`${AUTH_URL}/priljubljeni`, { credentials: "include" })
-      .then((odgovor) => odgovor.ok ? odgovor.json() : [])
-      .then((seznam) => { if (!preklicano) setPriljubljeniRecepti(seznam); })
-      .catch(() => { if (!preklicano) setNapaka("Priljubljenih receptov ni bilo mogoče naložiti."); });
-    return () => { preklicano = true; };
-  }, [uporabnik?.id]);
 
   useEffect(() => {
     if (!odprtiRecept) {
@@ -199,20 +186,7 @@ function App() {
     return () => { preklicano = true; };
   }, [odprtiRecept?.id]);
 
-  function jePriljubljen(receptId) {
-    return priljubljeniRecepti.some((item) => item.id === receptId);
-  }
-
-  function jeMojRecept(item) {
-    return Boolean(uporabnik && item.avtorId === uporabnik.id);
-  }
-
   function odpriDodajanjeRecepta() {
-    if (!uporabnik) {
-      setNapaka("Za dodajanje receptov se najprej prijavi.");
-      setPrijavnoOknoOdprto(true);
-      return;
-    }
     setOdprtiRecept(null);
     setAktivnaStran("dodaj");
     setMeniMobilniOdprt(false);
@@ -256,33 +230,10 @@ function App() {
     }
   }
 
-  async function preklopiPriljubljenost(item) {
-    if (!uporabnik) {
-      setNapaka("Za shranjevanje priljubljenih receptov se prijavi.");
-      setPrijavnoOknoOdprto(true);
-      return;
-    }
-    const jeZePriljubljen = jePriljubljen(item.id);
-    try {
-      const odgovor = await fetch(`${AUTH_URL}/priljubljeni/${item.id}`, {
-        method: jeZePriljubljen ? "DELETE" : "PUT",
-        credentials: "include",
-      });
-      if (!odgovor.ok) throw new Error("Priljubljenega recepta ni bilo mogoče posodobiti.");
-      setPriljubljeniRecepti((trenutni) => jeZePriljubljen
-        ? trenutni.filter((priljubljen) => priljubljen.id !== item.id)
-        : [item, ...trenutni]);
-      setNapaka("");
-    } catch {
-      setNapaka("Priljubljenega recepta ni bilo mogoče shraniti. Poskusi znova.");
-    }
-  }
-
   async function odjaviUporabnika() {
     try {
       await fetch(`${AUTH_URL}/odjava`, { method: "POST", credentials: "include" });
       setUporabnik(null);
-      setPriljubljeniRecepti([]);
       if (aktivnaStran === "profil") setAktivnaStran("domov");
       setMeniMobilniOdprt(false);
     } catch {
@@ -433,7 +384,6 @@ function App() {
       const odgovor = await fetch(url, {
         method: metoda,
         headers: { "Content-Type": "application/json" },
-        credentials: "include",
         body: JSON.stringify(podatki),
       });
 
@@ -475,10 +425,9 @@ function App() {
     if (!window.confirm("Ali res želiš izbrisati ta recept?")) return false;
 
     try {
-      const odgovor = await fetch(`${API_URL}/${id}`, { method: "DELETE", credentials: "include" });
+      const odgovor = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
       if (!odgovor.ok) throw new Error("Recepta ni bilo mogoče izbrisati.");
       await naloziRecepte();
-      setPriljubljeniRecepti((trenutni) => trenutni.filter((item) => item.id !== id));
       setObvestilo("Recept je izbrisan.");
       return true;
     } catch (error) {
@@ -608,7 +557,6 @@ function App() {
               <h2>{odprtiRecept.ime}</h2>
               <p className="opis-podrobnosti">{odprtiRecept.opis || "Kratek opis ni dodan."}</p>
               <p className="meta-podrobnosti">{odprtiRecept.casPriprave} min · {odprtiRecept.stPorcij || "—"} porcij · {normalizirajZahtevnost(odprtiRecept.zahtevnost || "Zahtevnost ni določena")}</p>
-              <p className="avtor-recepta">Avtor: {odprtiRecept.avtorIme || "Skupnost"}</p>
               {komentarji.length > 0 && <p className="povprecna-ocena">★ { (komentarji.reduce((vsota, komentar) => vsota + komentar.ocena, 0) / komentarji.length).toFixed(1) } / 5 <span>({komentarji.length} {komentarji.length === 1 ? "ocena" : "ocen"})</span></p>}
               <p className="oznaki">{[odprtiRecept.kategorije, odprtiRecept.vrstaObroka].filter(Boolean).join(" · ")}</p>
             </div>
@@ -647,17 +595,14 @@ function App() {
                 <article className="komentar-kartica" key={komentar.id}>
                   <div className="komentar-meta"><div><strong>{komentar.avtorIme}</strong><span className="komentar-zvezdice" aria-label={`Ocena ${komentar.ocena} od 5`}>{"★".repeat(komentar.ocena)}{"☆".repeat(5 - komentar.ocena)}</span></div><time dateTime={komentar.ustvarjeno}>{new Date(komentar.ustvarjeno).toLocaleDateString("sl-SI")}</time></div>
                   <p>{komentar.vsebina}</p>
-                  {(uporabnik && (komentar.avtorId === uporabnik.id || jeMojRecept(odprtiRecept))) && <button className="komentar-izbrisi" type="button" onClick={() => izbrisiKomentar(komentar.id)}>Izbriši komentar</button>}
+                  {uporabnik && komentar.avtorId === uporabnik.id && <button className="komentar-izbrisi" type="button" onClick={() => izbrisiKomentar(komentar.id)}>Izbriši komentar</button>}
                 </article>
               ))}
             </div>
           </section>
           <div className="gumbi gumbi-kartice">
-            <button className={jePriljubljen(odprtiRecept.id) ? "gumb-priljubljeno izbrano" : "gumb-priljubljeno"} type="button" onClick={() => preklopiPriljubljenost(odprtiRecept)} aria-pressed={jePriljubljen(odprtiRecept.id)}>
-              {jePriljubljen(odprtiRecept.id) ? "♥ Shranjeno" : "♡ Shrani med priljubljene"}
-            </button>
-            {jeMojRecept(odprtiRecept) && <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(odprtiRecept)}>Uredi</button>}
-            {jeMojRecept(odprtiRecept) && <button className="brisanje-gumb" type="button" onClick={async () => { if (await izbrisiRecept(odprtiRecept.id)) setOdprtiRecept(null); }}>Izbriši</button>}
+            <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(odprtiRecept)}>Uredi</button>
+            <button className="brisanje-gumb" type="button" onClick={async () => { if (await izbrisiRecept(odprtiRecept.id)) setOdprtiRecept(null); }}>Izbriši</button>
           </div>
         </section>
       ) : aktivnaStran === "domov" ? (
@@ -718,33 +663,12 @@ function App() {
         <header className="glava">
           <p className="oznaka">MOJA KUHARSKA ZBIRKA</p>
           <h1>Moj profil</h1>
-          <p>Tvoj račun in recepti, ki si jih shranila za pozneje.</p>
+          <p>Upravljaj podatke svojega računa.</p>
         </header>
         <section className="kartica profil-podatki">
           <div className="profil-avatar" aria-hidden="true">{uporabnik.ime?.trim()?.charAt(0)?.toLocaleUpperCase("sl-SI") || "✿"}</div>
           <div className="profil-identiteta"><h2>{uporabnik.ime}</h2><p>{uporabnik.email}</p></div>
           <button className="stranski-gumb" type="button" onClick={() => setProfilnoOknoOdprto(true)}>Uredi profil</button>
-        </section>
-        <section className="seznam profil-priljubljeni">
-          <div className="naslov-seznama"><h2>Priljubljeni recepti</h2><span>{priljubljeniRecepti.length}</span></div>
-          {priljubljeniRecepti.length === 0 ? (
-            <div className="prazno"><p>Še nimaš shranjenih priljubljenih receptov.</p><button className="glavni-gumb" type="button" onClick={() => { setAktivnaStran("vsi"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Odkrij recepte</button></div>
-          ) : (
-            <div className="mreza">
-              {priljubljeniRecepti.map((item) => (
-                <article className="kartica recept-kartica" key={item.id}>
-                  <h3>{item.ime}</h3>
-                  <div className="okvir-slike">{item.slika ? <img className="slika-recepta" src={item.slika} alt={`Slika jedi: ${item.ime}`} /> : <div className="brez-slike">Slika ni dodana</div>}</div>
-                  <p className="opis-recepta">{item.opis || "Kratek opis ni dodan."}</p>
-                  <p className="meta">{item.casPriprave} min · {item.stPorcij || "—"} porcij · {normalizirajZahtevnost(item.zahtevnost || "Zahtevnost ni določena")}</p>
-                  <div className="gumbi gumbi-kartice">
-                    <button className="stranski-gumb" type="button" onClick={() => odpriRecept(item)}>Odpri recept</button>
-                    <button className="gumb-priljubljeno izbrano" type="button" onClick={() => preklopiPriljubljenost(item)} aria-label={`Odstrani ${item.ime} iz priljubljenih`}>♥ Odstrani</button>
-                  </div>
-                </article>
-              ))}
-            </div>
-          )}
         </section>
       </section>
       ) : (
@@ -1020,16 +944,12 @@ function App() {
                   {item.kategorije && ` · ${item.kategorije}`}
                   {item.vrstaObroka && ` · ${item.vrstaObroka}`}
                 </p>
-                <p className="avtor-kartice">Avtor: {item.avtorIme || "Skupnost"}</p>
 
                 <button className="vec-gumb" type="button" onClick={() => odpriRecept(item)}>Več</button>
 
                 <div className="gumbi gumbi-kartice">
-                  <button className={jePriljubljen(item.id) ? "gumb-priljubljeno izbrano" : "gumb-priljubljeno"} type="button" onClick={() => preklopiPriljubljenost(item)} aria-pressed={jePriljubljen(item.id)}>
-                    {jePriljubljen(item.id) ? "♥ Shranjeno" : "♡ Priljubljeno"}
-                  </button>
-                  {jeMojRecept(item) && <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(item)}>Uredi</button>}
-                  {jeMojRecept(item) && <button className="brisanje-gumb" type="button" onClick={() => izbrisiRecept(item.id)}>Izbriši</button>}
+                  <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(item)}>Uredi</button>
+                  <button className="brisanje-gumb" type="button" onClick={() => izbrisiRecept(item.id)}>Izbriši</button>
                 </div>
               </article>
             );

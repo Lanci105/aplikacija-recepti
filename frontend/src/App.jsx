@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import AuthModal from "./AuthModal";
+import ProfileModal from "./ProfileModal";
 import "./App.css";
 
 //povezava z api in obrazci
@@ -113,9 +114,15 @@ function App() {
   const [aktivnaStran, setAktivnaStran] = useState("domov");
   const [meniMobilniOdprt, setMeniMobilniOdprt] = useState(false);
   const [uporabnik, setUporabnik] = useState(null);
+  const [priljubljeniRecepti, setPriljubljeniRecepti] = useState([]);
+  const [komentarji, setKomentarji] = useState([]);
+  const [vsebinaKomentarja, setVsebinaKomentarja] = useState("");
+  const [ocenaKomentarja, setOcenaKomentarja] = useState(5);
   const [prijavnoOknoOdprto, setPrijavnoOknoOdprto] = useState(false);
+  const [profilnoOknoOdprto, setProfilnoOknoOdprto] = useState(false);
   const [prejsnjaStran, setPrejsnjaStran] = useState("domov");
   const [napaka, setNapaka] = useState("");
+  const [obvestilo, setObvestilo] = useState("");
   const [nalaganje, setNalaganje] = useState(true);
   const [nalaganjeSlike, setNalaganjeSlike] = useState(false);
   const [meniKategorijOdprt, setMeniKategorijOdprt] = useState(false);
@@ -164,10 +171,119 @@ function App() {
       .catch(() => {});
   }, []);
 
+  useEffect(() => {
+    if (!uporabnik) {
+      setPriljubljeniRecepti([]);
+      return undefined;
+    }
+    let preklicano = false;
+    fetch(`${AUTH_URL}/priljubljeni`, { credentials: "include" })
+      .then((odgovor) => odgovor.ok ? odgovor.json() : [])
+      .then((seznam) => { if (!preklicano) setPriljubljeniRecepti(seznam); })
+      .catch(() => { if (!preklicano) setNapaka("Priljubljenih receptov ni bilo mogoče naložiti."); });
+    return () => { preklicano = true; };
+  }, [uporabnik?.id]);
+
+  useEffect(() => {
+    if (!odprtiRecept) {
+      setKomentarji([]);
+      setVsebinaKomentarja("");
+      setOcenaKomentarja(5);
+      return undefined;
+    }
+    let preklicano = false;
+    fetch(`${API_URL}/${odprtiRecept.id}/komentarji`)
+      .then((odgovor) => odgovor.ok ? odgovor.json() : [])
+      .then((seznam) => { if (!preklicano) setKomentarji(seznam); })
+      .catch(() => { if (!preklicano) setNapaka("Komentarjev ni bilo mogoče naložiti."); });
+    return () => { preklicano = true; };
+  }, [odprtiRecept?.id]);
+
+  function jePriljubljen(receptId) {
+    return priljubljeniRecepti.some((item) => item.id === receptId);
+  }
+
+  function jeMojRecept(item) {
+    return Boolean(uporabnik && item.avtorId === uporabnik.id);
+  }
+
+  function odpriDodajanjeRecepta() {
+    if (!uporabnik) {
+      setNapaka("Za dodajanje receptov se najprej prijavi.");
+      setPrijavnoOknoOdprto(true);
+      return;
+    }
+    setOdprtiRecept(null);
+    setAktivnaStran("dodaj");
+    setMeniMobilniOdprt(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  async function shraniKomentar(event) {
+    event.preventDefault();
+    if (!uporabnik) {
+      setNapaka("Za dodajanje komentarja se najprej prijavi.");
+      setPrijavnoOknoOdprto(true);
+      return;
+    }
+    try {
+      const odgovor = await fetch(`${API_URL}/${odprtiRecept.id}/komentarji`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ vsebina: vsebinaKomentarja, ocena: Number(ocenaKomentarja) }),
+      });
+      const podatki = await odgovor.json().catch(() => ({}));
+      if (!odgovor.ok) throw new Error(podatki.sporocilo || "Komentarja ni bilo mogoče shraniti.");
+      setKomentarji((trenutni) => [podatki, ...trenutni]);
+      setVsebinaKomentarja("");
+      setOcenaKomentarja(5);
+      setObvestilo("Komentar je shranjen.");
+      setNapaka("");
+    } catch (napakaZahteve) {
+      setNapaka(napakaZahteve.message);
+    }
+  }
+
+  async function izbrisiKomentar(komentarId) {
+    if (!window.confirm("Ali res želiš izbrisati ta komentar?")) return;
+    try {
+      const odgovor = await fetch(`${API_URL}/${odprtiRecept.id}/komentarji/${komentarId}`, { method: "DELETE", credentials: "include" });
+      if (!odgovor.ok) throw new Error("Komentarja ni bilo mogoče izbrisati.");
+      setKomentarji((trenutni) => trenutni.filter((komentar) => komentar.id !== komentarId));
+    } catch (napakaZahteve) {
+      setNapaka(napakaZahteve.message);
+    }
+  }
+
+  async function preklopiPriljubljenost(item) {
+    if (!uporabnik) {
+      setNapaka("Za shranjevanje priljubljenih receptov se prijavi.");
+      setPrijavnoOknoOdprto(true);
+      return;
+    }
+    const jeZePriljubljen = jePriljubljen(item.id);
+    try {
+      const odgovor = await fetch(`${AUTH_URL}/priljubljeni/${item.id}`, {
+        method: jeZePriljubljen ? "DELETE" : "PUT",
+        credentials: "include",
+      });
+      if (!odgovor.ok) throw new Error("Priljubljenega recepta ni bilo mogoče posodobiti.");
+      setPriljubljeniRecepti((trenutni) => jeZePriljubljen
+        ? trenutni.filter((priljubljen) => priljubljen.id !== item.id)
+        : [item, ...trenutni]);
+      setNapaka("");
+    } catch {
+      setNapaka("Priljubljenega recepta ni bilo mogoče shraniti. Poskusi znova.");
+    }
+  }
+
   async function odjaviUporabnika() {
     try {
       await fetch(`${AUTH_URL}/odjava`, { method: "POST", credentials: "include" });
       setUporabnik(null);
+      setPriljubljeniRecepti([]);
+      if (aktivnaStran === "profil") setAktivnaStran("domov");
       setMeniMobilniOdprt(false);
     } catch {
       setNapaka("Odjava ni uspela. Poskusi znova.");
@@ -268,6 +384,12 @@ function App() {
   async function shraniRecept(event) {
     event.preventDefault();
     setNapaka("");
+    setObvestilo("");
+    if (!uporabnik) {
+      setNapaka("Za dodajanje in urejanje receptov se najprej prijavi.");
+      setPrijavnoOknoOdprto(true);
+      return;
+    }
     if (nalaganjeSlike) {
       setNapaka("Počakaj, da se slika naloži, nato shrani recept.");
       return;
@@ -311,6 +433,7 @@ function App() {
       const odgovor = await fetch(url, {
         method: metoda,
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify(podatki),
       });
 
@@ -321,6 +444,7 @@ function App() {
 
       ponastaviObrazec();
       await naloziRecepte();
+      setObvestilo(urejanjeId ? "Recept je posodobljen." : "Recept je dodan.");
     } catch (error) {
       setNapaka(error.message);
     }
@@ -351,9 +475,11 @@ function App() {
     if (!window.confirm("Ali res želiš izbrisati ta recept?")) return false;
 
     try {
-      const odgovor = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+      const odgovor = await fetch(`${API_URL}/${id}`, { method: "DELETE", credentials: "include" });
       if (!odgovor.ok) throw new Error("Recepta ni bilo mogoče izbrisati.");
       await naloziRecepte();
+      setPriljubljeniRecepti((trenutni) => trenutni.filter((item) => item.id !== id));
+      setObvestilo("Recept je izbrisan.");
       return true;
     } catch (error) {
       setNapaka(error.message);
@@ -440,10 +566,11 @@ function App() {
         <div className={`meni-povezave ${meniMobilniOdprt ? "odprt" : ""}`}>
           <button className={aktivnaStran === "domov" && !odprtiRecept ? "meni-povezava izbrana" : "meni-povezava"} type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("domov"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Domov</button>
           <button className={aktivnaStran === "vsi" && !odprtiRecept ? "meni-povezava izbrana" : "meni-povezava"} type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("vsi"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Vsi recepti</button>
-          <button className="meni-dodaj" type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("dodaj"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>＋ Dodaj svoj recept</button>
+          <button className="meni-dodaj" type="button" onClick={odpriDodajanjeRecepta}>＋ Dodaj svoj recept</button>
           {uporabnik ? (
             <div className="meni-uporabnik">
               <span className="meni-pozdrav">Živjo, {uporabnik.ime}</span>
+              <button className={aktivnaStran === "profil" ? "meni-povezava izbrana" : "meni-povezava"} type="button" onClick={() => { setOdprtiRecept(null); setAktivnaStran("profil"); setMeniMobilniOdprt(false); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Moj profil</button>
               <button className="meni-odjava" type="button" onClick={odjaviUporabnika}>Odjava</button>
             </div>
           ) : (
@@ -461,8 +588,12 @@ function App() {
       {prijavnoOknoOdprto && (
         <AuthModal
           onClose={() => setPrijavnoOknoOdprto(false)}
-          onLogin={(prijavljeni) => setUporabnik(prijavljeni)}
+          onLogin={(prijavljeni) => { setUporabnik(prijavljeni); setNapaka(""); }}
         />
+      )}
+
+      {profilnoOknoOdprto && uporabnik && (
+        <ProfileModal uporabnik={uporabnik} onClose={() => setProfilnoOknoOdprto(false)} onSaved={setUporabnik} />
       )}
 
       <main className={`stran ${aktivnaStran === "domov" && !odprtiRecept ? "stran-domov" : ""} ${aktivnaStran === "vsi" ? "stran-vsi" : ""}`}>
@@ -477,6 +608,8 @@ function App() {
               <h2>{odprtiRecept.ime}</h2>
               <p className="opis-podrobnosti">{odprtiRecept.opis || "Kratek opis ni dodan."}</p>
               <p className="meta-podrobnosti">{odprtiRecept.casPriprave} min · {odprtiRecept.stPorcij || "—"} porcij · {normalizirajZahtevnost(odprtiRecept.zahtevnost || "Zahtevnost ni določena")}</p>
+              <p className="avtor-recepta">Avtor: {odprtiRecept.avtorIme || "Skupnost"}</p>
+              {komentarji.length > 0 && <p className="povprecna-ocena">★ { (komentarji.reduce((vsota, komentar) => vsota + komentar.ocena, 0) / komentarji.length).toFixed(1) } / 5 <span>({komentarji.length} {komentarji.length === 1 ? "ocena" : "ocen"})</span></p>}
               <p className="oznaki">{[odprtiRecept.kategorije, odprtiRecept.vrstaObroka].filter(Boolean).join(" · ")}</p>
             </div>
           </div>
@@ -492,9 +625,39 @@ function App() {
               {razdeliKorake(odprtiRecept.navodila).map((korak, index) => <li key={`korak-${index}`}>{korak}</li>)}
             </ol>
           </div>
+          <section className="razdelek-podrobnosti razdelek-komentarji">
+            <div className="komentarji-glava"><div><p className="oznaka">MNENJA KUHARJEV</p><h3>Komentarji in ocene</h3></div><span>{komentarji.length}</span></div>
+            {obvestilo && <p className="auth-uspeh" role="status">{obvestilo}</p>}
+            {napaka && <p className="napaka" role="alert">{napaka}</p>}
+            {uporabnik ? (
+              <form className="komentar-obrazec" onSubmit={shraniKomentar}>
+                <label>Ocena
+                  <select value={ocenaKomentarja} onChange={(event) => setOcenaKomentarja(event.target.value)}>
+                    <option value="5">★★★★★ — Odlično</option><option value="4">★★★★☆ — Zelo dobro</option><option value="3">★★★☆☆ — Dobro</option><option value="2">★★☆☆☆ — Zadovoljivo</option><option value="1">★☆☆☆☆ — Slabo</option>
+                  </select>
+                </label>
+                <label>Tvoj komentar
+                  <textarea value={vsebinaKomentarja} onChange={(event) => setVsebinaKomentarja(event.target.value)} maxLength={1500} rows={4} placeholder="Kako ti je recept uspel?" required />
+                </label>
+                <button className="glavni-gumb" type="submit">Objavi komentar</button>
+              </form>
+            ) : <p className="komentar-prijava">Za oceno ali komentar se <button type="button" onClick={() => setPrijavnoOknoOdprto(true)}>prijavi</button>.</p>}
+            <div className="seznam-komentarjev">
+              {komentarji.length === 0 ? <p className="prazno">Za ta recept še ni komentarjev. Bodi prvi!</p> : komentarji.map((komentar) => (
+                <article className="komentar-kartica" key={komentar.id}>
+                  <div className="komentar-meta"><div><strong>{komentar.avtorIme}</strong><span className="komentar-zvezdice" aria-label={`Ocena ${komentar.ocena} od 5`}>{"★".repeat(komentar.ocena)}{"☆".repeat(5 - komentar.ocena)}</span></div><time dateTime={komentar.ustvarjeno}>{new Date(komentar.ustvarjeno).toLocaleDateString("sl-SI")}</time></div>
+                  <p>{komentar.vsebina}</p>
+                  {(uporabnik && (komentar.avtorId === uporabnik.id || jeMojRecept(odprtiRecept))) && <button className="komentar-izbrisi" type="button" onClick={() => izbrisiKomentar(komentar.id)}>Izbriši komentar</button>}
+                </article>
+              ))}
+            </div>
+          </section>
           <div className="gumbi gumbi-kartice">
-            <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(odprtiRecept)}>Uredi</button>
-            <button className="brisanje-gumb" type="button" onClick={async () => { if (await izbrisiRecept(odprtiRecept.id)) setOdprtiRecept(null); }}>Izbriši</button>
+            <button className={jePriljubljen(odprtiRecept.id) ? "gumb-priljubljeno izbrano" : "gumb-priljubljeno"} type="button" onClick={() => preklopiPriljubljenost(odprtiRecept)} aria-pressed={jePriljubljen(odprtiRecept.id)}>
+              {jePriljubljen(odprtiRecept.id) ? "♥ Shranjeno" : "♡ Shrani med priljubljene"}
+            </button>
+            {jeMojRecept(odprtiRecept) && <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(odprtiRecept)}>Uredi</button>}
+            {jeMojRecept(odprtiRecept) && <button className="brisanje-gumb" type="button" onClick={async () => { if (await izbrisiRecept(odprtiRecept.id)) setOdprtiRecept(null); }}>Izbriši</button>}
           </div>
         </section>
       ) : aktivnaStran === "domov" ? (
@@ -507,7 +670,7 @@ function App() {
               <p>Odkrij nove ideje za vsak dan, shrani svoje najljubše in deli jedi, ki jih rad pripravljaš.</p>
               <div className="uvodna-gumbi">
                 <button className="glavni-gumb" type="button" onClick={() => { setAktivnaStran("vsi"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Razišči recepte</button>
-                <button className="uvodna-povezava" type="button" onClick={() => { setAktivnaStran("dodaj"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>＋ Dodaj svoj recept</button>
+                <button className="uvodna-povezava" type="button" onClick={odpriDodajanjeRecepta}>＋ Dodaj svoj recept</button>
               </div>
             </div>
             <div className="uvodna-slika">
@@ -532,7 +695,7 @@ function App() {
 
           {napaka && <p className="napaka" role="alert">{napaka}</p>}
           {nalaganje && <p>Nalagam recepte …</p>}
-          {!nalaganje && recepti.length === 0 && <div className="prazno-domov"><h2>Začni svojo zbirko</h2><p>Dodaj prvi recept in kmalu se bodo tukaj pojavile tvoje kuharske ideje.</p><button className="glavni-gumb" type="button" onClick={() => setAktivnaStran("dodaj")}>Dodaj svoj prvi recept</button></div>}
+          {!nalaganje && recepti.length === 0 && <div className="prazno-domov"><h2>Začni svojo zbirko</h2><p>Dodaj prvi recept in kmalu se bodo tukaj pojavile tvoje kuharske ideje.</p><button className="glavni-gumb" type="button" onClick={odpriDodajanjeRecepta}>Dodaj svoj prvi recept</button></div>}
 
           {!nalaganje && recepti.length > 0 && <>
             <section className="domov-razdelek" id="navdih">
@@ -548,8 +711,42 @@ function App() {
             {vegetarijanski.length > 0 && <section className="domov-razdelek manjši-razdelek"><div className="domov-razdelek-glava"><div><p className="oznaka">RASTLINSKE IDEJE</p><h2>Vegetarijanski izbor</h2></div></div><div className="domov-mreza">{vegetarijanski.slice(0, 4).map((item) => <button className="domov-recept" type="button" key={item.id} onClick={() => odpriRecept(item)}><div className="domov-recept-slika">{item.slika ? <img src={item.slika} alt="" /> : <span>✿</span>}</div><div className="domov-recept-info"><small>{item.kategorije}</small><h3>{item.ime}</h3><p>{item.casPriprave || "—"} min · {item.vrstaObroka || "Domače"}</p></div><span className="domov-recept-puščica">↗</span></button>)}</div></section>}
           </>}
 
-          <section className="poziv-k-receptu"><div><p className="oznaka">TVOJA KUHINJA, TVOJA ZGODBA</p><h2>Imaš recept, ki ga obožuješ?</h2><p>Shrani ga v svojo zbirko, da ga boš vedno našla.</p></div><button className="glavni-gumb" type="button" onClick={() => { setAktivnaStran("dodaj"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>＋ Dodaj svoj recept</button></section>
+          <section className="poziv-k-receptu"><div><p className="oznaka">TVOJA KUHINJA, TVOJA ZGODBA</p><h2>Imaš recept, ki ga obožuješ?</h2><p>Shrani ga v svojo zbirko, da ga boš vedno našla.</p></div><button className="glavni-gumb" type="button" onClick={odpriDodajanjeRecepta}>＋ Dodaj svoj recept</button></section>
         </>
+      ) : aktivnaStran === "profil" && uporabnik ? (
+      <section className="profilna-stran">
+        <header className="glava">
+          <p className="oznaka">MOJA KUHARSKA ZBIRKA</p>
+          <h1>Moj profil</h1>
+          <p>Tvoj račun in recepti, ki si jih shranila za pozneje.</p>
+        </header>
+        <section className="kartica profil-podatki">
+          <div className="profil-avatar" aria-hidden="true">{uporabnik.ime?.trim()?.charAt(0)?.toLocaleUpperCase("sl-SI") || "✿"}</div>
+          <div className="profil-identiteta"><h2>{uporabnik.ime}</h2><p>{uporabnik.email}</p></div>
+          <button className="stranski-gumb" type="button" onClick={() => setProfilnoOknoOdprto(true)}>Uredi profil</button>
+        </section>
+        <section className="seznam profil-priljubljeni">
+          <div className="naslov-seznama"><h2>Priljubljeni recepti</h2><span>{priljubljeniRecepti.length}</span></div>
+          {priljubljeniRecepti.length === 0 ? (
+            <div className="prazno"><p>Še nimaš shranjenih priljubljenih receptov.</p><button className="glavni-gumb" type="button" onClick={() => { setAktivnaStran("vsi"); window.scrollTo({ top: 0, behavior: "smooth" }); }}>Odkrij recepte</button></div>
+          ) : (
+            <div className="mreza">
+              {priljubljeniRecepti.map((item) => (
+                <article className="kartica recept-kartica" key={item.id}>
+                  <h3>{item.ime}</h3>
+                  <div className="okvir-slike">{item.slika ? <img className="slika-recepta" src={item.slika} alt={`Slika jedi: ${item.ime}`} /> : <div className="brez-slike">Slika ni dodana</div>}</div>
+                  <p className="opis-recepta">{item.opis || "Kratek opis ni dodan."}</p>
+                  <p className="meta">{item.casPriprave} min · {item.stPorcij || "—"} porcij · {normalizirajZahtevnost(item.zahtevnost || "Zahtevnost ni določena")}</p>
+                  <div className="gumbi gumbi-kartice">
+                    <button className="stranski-gumb" type="button" onClick={() => odpriRecept(item)}>Odpri recept</button>
+                    <button className="gumb-priljubljeno izbrano" type="button" onClick={() => preklopiPriljubljenost(item)} aria-label={`Odstrani ${item.ime} iz priljubljenih`}>♥ Odstrani</button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      </section>
       ) : (
       <>
       <header className="glava">
@@ -730,6 +927,7 @@ function App() {
           </div>
 
           {napaka && <p className="napaka" role="alert">{napaka}</p>}
+          {obvestilo && <p className="auth-uspeh" role="status">{obvestilo}</p>}
 
           <div className="gumbi gumbi-obrazca">
             <button className="glavni-gumb" type="submit" disabled={nalaganjeSlike}>
@@ -800,9 +998,10 @@ function App() {
           </div></>
         )}
 
+        {obvestilo && <p className="auth-uspeh" role="status">{obvestilo}</p>}
         {napaka && <p className="napaka" role="alert">{napaka}</p>}
         {nalaganje && <p>Nalagam recepte …</p>}
-        {!nalaganje && recepti.length === 0 && <div className="prazno"><p>Za zdaj še ni receptov.</p>{aktivnaStran === "vsi" && <button className="glavni-gumb" type="button" onClick={() => setAktivnaStran("dodaj")}>Dodaj prvi recept</button>}</div>}
+        {!nalaganje && recepti.length === 0 && <div className="prazno"><p>Za zdaj še ni receptov.</p>{aktivnaStran === "vsi" && <button className="glavni-gumb" type="button" onClick={odpriDodajanjeRecepta}>Dodaj prvi recept</button>}</div>}
         {!nalaganje && recepti.length > 0 && aktivnaStran === "vsi" && prikazaniRecepti.length === 0 && <p className="prazno">Za izbrane filtre ni receptov. Poskusi z drugačno kombinacijo.</p>}
 
         <div className="mreza">
@@ -821,12 +1020,16 @@ function App() {
                   {item.kategorije && ` · ${item.kategorije}`}
                   {item.vrstaObroka && ` · ${item.vrstaObroka}`}
                 </p>
+                <p className="avtor-kartice">Avtor: {item.avtorIme || "Skupnost"}</p>
 
                 <button className="vec-gumb" type="button" onClick={() => odpriRecept(item)}>Več</button>
 
                 <div className="gumbi gumbi-kartice">
-                  <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(item)}>Uredi</button>
-                  <button className="brisanje-gumb" type="button" onClick={() => izbrisiRecept(item.id)}>Izbriši</button>
+                  <button className={jePriljubljen(item.id) ? "gumb-priljubljeno izbrano" : "gumb-priljubljeno"} type="button" onClick={() => preklopiPriljubljenost(item)} aria-pressed={jePriljubljen(item.id)}>
+                    {jePriljubljen(item.id) ? "♥ Shranjeno" : "♡ Priljubljeno"}
+                  </button>
+                  {jeMojRecept(item) && <button className="stranski-gumb" type="button" onClick={() => zacniUrejanje(item)}>Uredi</button>}
+                  {jeMojRecept(item) && <button className="brisanje-gumb" type="button" onClick={() => izbrisiRecept(item.id)}>Izbriši</button>}
                 </div>
               </article>
             );

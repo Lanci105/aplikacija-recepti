@@ -12,6 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -104,6 +105,42 @@ public class AuthController {
                         .body(Map.of("sporocilo", "Uporabnik ni prijavljen.")));
     }
 
+    @Operation(summary = "Posodobi profil prijavljenega uporabnika")
+    @PutMapping("/jaz")
+    public ResponseEntity<?> posodobiProfil(@Valid @RequestBody PosodobitevProfilaZahteva zahteva, HttpServletRequest zahtevaHttp) {
+        HttpSession seja = zahtevaHttp.getSession(false);
+        if (seja == null || !(seja.getAttribute(SESSION_USER_ID) instanceof Long uporabnikId)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sporocilo", "Za urejanje profila se prijavi."));
+        }
+        Uporabnik uporabnik = uporabnikRepository.findById(uporabnikId).orElse(null);
+        if (uporabnik == null) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("sporocilo", "Uporabnik ni prijavljen."));
+
+        String email = normalizirajEmail(zahteva.email());
+        if (uporabnikRepository.existsByEmailAndIdNot(email, uporabnikId)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sporocilo", "Ta e-poštni naslov že uporablja drug račun."));
+        }
+        boolean spreminjaGeslo = zahteva.novoGeslo() != null && !zahteva.novoGeslo().isBlank();
+        if (spreminjaGeslo && (zahteva.novoGeslo().length() < 8 || zahteva.novoGeslo().length() > 64)) {
+            return ResponseEntity.badRequest().body(Map.of("sporocilo", "Novo geslo mora imeti od 8 do 64 znakov."));
+        }
+        if (spreminjaGeslo && (zahteva.trenutnoGeslo() == null || !passwordEncoder.matches(zahteva.trenutnoGeslo(), uporabnik.getGesloHash()))) {
+            return ResponseEntity.badRequest().body(Map.of("sporocilo", "Za spremembo gesla vnesi pravilno trenutno geslo."));
+        }
+        uporabnik.setIme(zahteva.ime().trim());
+        uporabnik.setEmail(email);
+        if (spreminjaGeslo) {
+            if (zahteva.novoGeslo().getBytes(StandardCharsets.UTF_8).length > 72) {
+                return ResponseEntity.badRequest().body(Map.of("sporocilo", "Geslo je predolgo. Uporabi največ 72 bajtov."));
+            }
+            uporabnik.setGesloHash(passwordEncoder.encode(zahteva.novoGeslo()));
+        }
+        try {
+            return ResponseEntity.ok(javniPodatki(uporabnikRepository.save(uporabnik)));
+        } catch (DataIntegrityViolationException napaka) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of("sporocilo", "Ta e-poštni naslov že uporablja drug račun."));
+        }
+    }
+
     @Operation(summary = "Odjavi uporabnika", description = "Zaključi trenutno uporabniško sejo.")
     @PostMapping("/odjava")
     public ResponseEntity<Void> odjava(HttpServletRequest zahtevaHttp) {
@@ -135,6 +172,13 @@ public class AuthController {
     public record PrijavaZahteva(
             @NotBlank(message = "Vnesi e-poštni naslov.") @Email(message = "Vnesi veljaven e-poštni naslov.") String email,
             @NotBlank(message = "Vnesi geslo.") String geslo) {
+    }
+
+    public record PosodobitevProfilaZahteva(
+            @NotBlank(message = "Vnesi ime.") @Size(max = 80, message = "Ime je lahko dolgo največ 80 znakov.") String ime,
+            @NotBlank(message = "Vnesi e-poštni naslov.") @Email(message = "Vnesi veljaven e-poštni naslov.") @Size(max = 254, message = "E-poštni naslov je predolg.") String email,
+            String trenutnoGeslo,
+            @Size(max = 64, message = "Novo geslo je predolgo.") String novoGeslo) {
     }
 
     // Javni odgovor API-ja; namenoma ne vsebuje zgoščenega gesla.

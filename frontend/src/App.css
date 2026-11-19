@@ -324,6 +324,8 @@ input:focus, textarea:focus, select:focus {
 
 .gumbi-kartice, .gumbi-obrazca { justify-content: center; }
 .gumbi-kartice { margin-top: auto; padding-top: 16px; }
+.gumb-priljubljeno { min-height: 40px; border: 1px solid #e6d9d4; background: #fff9f7; color: #9b5548; }
+.gumb-priljubljeno:hover, .gumb-priljubljeno.izbrano { border-color: #e8b8aa; background: #fff0eb; color: #a4493a; }
 
 button {
   min-height: 42px;
@@ -504,6 +506,14 @@ button:hover { transform: translateY(-1px); }
   text-align: center;
 }
 
+.profil-podatki { display: flex; align-items: center; gap: 18px; padding: 22px; }
+.profil-avatar { display: grid; width: 64px; height: 64px; flex: 0 0 64px; place-items: center; border-radius: 50%; background: #e8efe5; color: #426b4c; font-family: Georgia, "Times New Roman", serif; font-size: 1.7rem; }
+.profil-identiteta { min-width: 0; flex: 1; }
+.profil-identiteta h2 { margin: 0; color: #2c4733; font-family: Georgia, "Times New Roman", serif; font-size: 1.45rem; }
+.profil-identiteta p { margin: 6px 0 0; color: #718075; overflow-wrap: anywhere; }
+.profil-priljubljeni { margin-top: 38px; }
+.profil-priljubljeni .prazno { padding: 36px 20px; text-align: center; }
+
 .napaka { border-radius: 10px; background: #fff1ed; color: #a54836; padding: 12px 14px; }
 
 /* za tablice in telefone. */
@@ -547,6 +557,9 @@ button:hover { transform: translateY(-1px); }
   .slika-podrobnosti { max-height: 320px; }
   .vnos-koraka { grid-template-columns: 1fr 38px; }
   .oznaka-koraka { grid-column: 1 / -1; padding-top: 0; }
+  .profil-podatki { align-items: flex-start; flex-wrap: wrap; }
+  .profil-identiteta { align-self: center; }
+  .profil-podatki > button { width: 100%; }
 }
 .iskalnik-receptov {
   width: 100%;
@@ -560,4 +573,35 @@ button:hover { transform: translateY(-1px); }
   border-radius: 8px;
   font-size: 16px;
   box-sizing: border-box;
+}
+
+.avtor-kartice { margin: 8px 0 0; color: #7b887d; font-size: 0.82rem; }
+.avtor-recepta { margin: 8px 0; color: #718075; font-size: 0.9rem; }
+.povprecna-ocena { margin: 10px 0; color: #aa7734; font-weight: 750; }
+.povprecna-ocena span { color: #829084; font-size: 0.82rem; font-weight: 500; }
+.razdelek-komentarji { margin-top: 38px; }
+.komentarji-glava { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.komentarji-glava .oznaka { margin: 0 0 6px; }
+.komentarji-glava h3 { margin: 0; }
+.komentarji-glava > span { display: grid; min-width: 36px; height: 36px; place-items: center; border-radius: 50%; background: #edf2e9; color: #426b4c; font-weight: 750; }
+.komentar-obrazec { display: grid; gap: 14px; margin: 0 0 24px; padding: 18px; border: 1px solid #e5ebe2; border-radius: 15px; background: #fbfcfa; }
+.komentar-obrazec label { display: grid; gap: 7px; color: #46574b; font-size: 0.88rem; }
+.komentar-obrazec select, .komentar-obrazec textarea { width: 100%; border: 1px solid #dce4d9; border-radius: 10px; background: #fff; color: #34463a; }
+.komentar-obrazec select { min-height: 44px; padding: 9px 12px; }
+.komentar-obrazec textarea { padding: 12px; resize: vertical; }
+.komentar-obrazec .glavni-gumb { justify-self: start; }
+.komentar-prijava { color: #718075; }
+.komentar-prijava button { min-height: auto; padding: 0; background: none; color: #3f6948; text-decoration: underline; }
+.seznam-komentarjev { display: grid; gap: 12px; }
+.komentar-kartica { padding: 16px 18px; border: 1px solid #e5ebe2; border-radius: 13px; background: #fff; }
+.komentar-meta { display: flex; align-items: center; justify-content: space-between; gap: 14px; color: #708075; font-size: 0.82rem; }
+.komentar-meta > div { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
+.komentar-meta strong { color: #344a39; font-size: 0.92rem; }
+.komentar-zvezdice { color: #c18a3e; letter-spacing: 0.05em; }
+.komentar-kartica > p { margin: 12px 0; color: #4c5b50; line-height: 1.6; white-space: pre-wrap; }
+.komentar-izbrisi { min-height: 34px; padding: 5px 10px; background: #fff1ed; color: #a54836; font-size: 0.8rem; }
+
+@media (max-width: 520px) {
+  .komentar-meta { align-items: flex-start; flex-direction: column; gap: 6px; }
+  .komentar-obrazec .glavni-gumb { width: 100%; }
 }

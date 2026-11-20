@@ -21,7 +21,7 @@ V terminalu vstopi v mapo `frontend` in zaženi:
 npm run dev
 ```
 
-Za delovanje aplikacije mora biti zagnan tudi backend na naslovu `http://localhost:8080`.
+Za delovanje aplikacije mora biti zagnan tudi backend na naslovu `http://localhost:8081`.
 
 ## Ukazi
 

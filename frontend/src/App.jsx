@@ -4,8 +4,8 @@ import ProfileModal from "./ProfileModal";
 import "./App.css";
 
 //povezava z api in obrazci
-const API_URL = "http://localhost:8080/api/recepti";
-const AUTH_URL = "http://localhost:8080/api/auth";
+const API_URL = "http://localhost:8081/api/recepti";
+const AUTH_URL = "http://localhost:8081/api/auth";
 const kategorije = ["Vegansko", "Vegetarijansko", "Pescetarijansko", "Visokobeljakovinsko", "Visokokalorično", "Brez glutena", "Brez laktoze", "Drugo"];
 const vrsteObroka = ["Zajtrk", "Kosilo", "Večerja", "Sladica", "Prigrizek"];
 
@@ -150,7 +150,7 @@ function App() {
       setRecepti(nalozeniRecepti);
       setReceptiZaNavdih(izberiNakljucneRecepte(nalozeniRecepti, 4));
     } catch {
-      setNapaka("Povezava z backendom ni uspela. Preveri, ali ta deluje na portu 8080.");
+      setNapaka("Povezava z backendom ni uspela. Preveri, ali ta deluje na portu 8081.");
     } finally {
       setNalaganje(false);
     }

@@ -193,7 +193,7 @@ cd backend
 
 `DB_USERNAME` nastavi na uporabnika PostgreSQL, ki ima dostop do baze. Če tvoj PostgreSQL uporabnik ni enak uporabniškemu imenu macOS, namesto `$(whoami)` vpiši njegovo ime. Če baza zahteva geslo, ga nastavi v `DB_PASSWORD`. Spremenljivke nastavi v istem terminalu, v katerem zaženeš backend.
 
-Ko se v izpisu pokaže, da se je aplikacija zagnala na vratih `8080`, je backend pripravljen. Terminal pusti odprt.
+Ko se v izpisu pokaže, da se je aplikacija zagnala na vratih `8081`, je backend pripravljen. Terminal pusti odprt.
 
 ### 4. Namesti pakete in zaženi frontend
 
@@ -205,7 +205,7 @@ npm ci
 npm run dev
 ```
 
-Odpri naslov, ki ga izpiše Vite, običajno [http://localhost:5173](http://localhost:5173). Frontend pošilja zahteve backendu na `http://localhost:8080/api/recepti`.
+Odpri naslov, ki ga izpiše Vite, običajno [http://localhost:5173](http://localhost:5173). Frontend pošilja zahteve backendu na `http://localhost:8081/api/recepti`.
 
 ### 5. Ustavi aplikaciji
 
@@ -217,7 +217,7 @@ brew services stop postgresql@16
 
 ## REST API in Swagger
 
-Ko backend teče, odpri [Swagger UI](http://localhost:8080/swagger-ui/index.html). API-je lahko tam razširiš, izpolniš podatke in pritisneš **Try it out** ter **Execute**.
+Ko backend teče, odpri [Swagger UI](http://localhost:8081/swagger-ui/index.html). API-je lahko tam razširiš, izpolniš podatke in pritisneš **Try it out** ter **Execute**.
 
 | Metoda | Pot | Namen |
 |---|---|---|

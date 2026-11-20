@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import "./AuthModal.css";
 
 // Naslov REST API-ja za uporabniške račune.
-const AUTH_URL = "http://localhost:8080/api/auth";
+const AUTH_URL = "http://localhost:8081/api/auth";
 
 function AuthModal({ onClose, onLogin }) {
   // Stanja obrazca, napak, potrdil in nalaganja.

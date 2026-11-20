@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import "./AuthModal.css";
 
-const AUTH_URL = "http://localhost:8080/api/auth";
+const AUTH_URL = "http://localhost:8081/api/auth";
 
 function ProfileModal({ uporabnik, onClose, onSaved }) {
   const [ime, setIme] = useState(uporabnik.ime || "");

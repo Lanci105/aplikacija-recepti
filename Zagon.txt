@@ -14,17 +14,25 @@ Baje novi zagon:
 brew services start postgresql@16
 psql -d recepti -c "SELECT current_database();"
 
-drugi terminal:
+drugi terminal: torej tega več ne
 export DB_URL="jdbc:postgresql://localhost:5432/recepti"
 export DB_USERNAME="$(whoami)"
 export DB_PASSWORD=""
 
 cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
-./mvnw spring-boot:run
+./mvnw spring-boot:run 
 
 tretji terminal:
 cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
 npm run dev
+
+terminal za backend: za lano: 
+cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
+export DB_URL='jdbc:postgresql://aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require'
+export DB_USERNAME='postgres.afopjmkqreiuyvaoebxm'
+read -s "DB_PASSWORD?Vnesi geslo Supabase baze: "
+export DB_PASSWORD
+./mvnw spring-boot:run
 
 
 uporabniško ime in geslo za stran: 
@@ -51,3 +59,23 @@ Recept:
 Za uvoz receptov in uporabnikov v terminal nalimi: 
 psql -h localhost -U "$(whoami)" -d recepti \
   -f "docs/vzorčni-recepti.sql"
+
+
+Geslo za bazo: 
+L4sk1Pr1m02
+
+
+Kako za novo bazo: 
+prvi terminal: cd "/pot/do/aplikacija-recepti/backend"
+
+potem: 
+export DB_URL='jdbc:postgresql://aws-1-eu-west-1.pooler.supabase.com:5432/postgres?sslmode=require'
+export DB_USERNAME='postgres.afopjmkqreiuyvaoebxm'
+read -s "DB_PASSWORD?Vnesi geslo Supabase baze: "
+export DB_PASSWORD
+./mvnw spring-boot:run
+
+drugi terminal: 
+cd "/pot/do/aplikacija-recepti/frontend"
+npm install
+npm run dev

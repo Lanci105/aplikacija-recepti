@@ -1,53 +1,53 @@
-Zagon aplikacije Recepti (macOS)
 
-Predpogoji
-- Nameščen PostgreSQL 16 (npr. prek Homebrew).
-- JDK 21 ali novejši.
-- Node.js in npm.
-- Projekt je kloniran iz GitHub repozitorija.
+Prvi terminal: brew services start postgresql@16
+preveri bazo: psql -d recepti -c "SELECT current_database();"
 
-1. Zaženi PostgreSQL (prvi terminal)
+Drugi terminal: cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
+./mvnw spring-boot:run
 
+Tretji terminal: cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
+npm run dev
+
+
+
+Baje novi zagon: 
 brew services start postgresql@16
-
-Bazo ustvari samo prvič, če še ne obstaja:
-
-createdb recepti
-
-Preveri povezavo:
-
 psql -d recepti -c "SELECT current_database();"
 
-2. Zaženi backend (drugi terminal)
-
-V terminalu se najprej premakni v mapo projekta, nato zaženi:
-
-cd backend
+drugi terminal:
 export DB_URL="jdbc:postgresql://localhost:5432/recepti"
 export DB_USERNAME="$(whoami)"
 export DB_PASSWORD=""
+
+cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/backend"
 ./mvnw spring-boot:run
 
-Če PostgreSQL uporablja drugo uporabniško ime ali geslo, ustrezno spremeni DB_USERNAME in DB_PASSWORD. Pusti terminal odprt. Backend teče na http://localhost:8080.
-
-3. Zaženi frontend (tretji terminal)
-
-V novem terminalu se premakni v mapo projekta, nato zaženi:
-
-cd frontend
-npm ci
+tretji terminal:
+cd "/Users/Lana/Documents/2. Letnik/RIS/Aplikacija_recepti/frontend"
 npm run dev
 
-V brskalniku odpri naslov, ki ga izpiše Vite, običajno http://localhost:5173.
 
-Prijava, profil in osebne funkcije
-- Ustvari račun prek gumba Prijava/Registracija ali se prijavi s svojim računom.
-- Vsak uporabnik naj uporablja svoje geslo. Gesel ne zapisuj v to datoteko ali v Git.
-- Za urejanje profila, oddajo komentarja ali ocene ter brisanje lastnega komentarja se prijavi.
-- Recepti se lahko dodajajo, urejajo in brišejo kot doslej.
+uporabniško ime in geslo za stran: 
+horvatlana393@gmail.com
+geslo123
 
-Dodatno
-- Swagger API dokumentacija: http://localhost:8080/swagger-ui/index.html
-- Izpis receptov iz baze: psql -d recepti -c "SELECT * FROM recept;"
-- Ustavitev strežnikov: v vsakem terminalu pritisni Ctrl+C.
-- Ustavitev PostgreSQL po koncu dela: brew services stop postgresql@16
+ivona.djordjevic14@gmail.com
+geslo321
+
+
+Prikaz baze receptov: psql -d recepti -c "SELECT * FROM recept;"
+
+Recept: 
+{
+  "ime": "Palačinke za zagovor",
+  "sestavine": "200 g moke, 300 ml mleka, 2 jajci",
+  "navodila": "Zmešaj sestavine in speci palačinke.",
+  "casPriprave": 20,
+  "kategorije": "sladice",
+  "vrstaObroka": "zajtrk"
+}
+
+
+Za uvoz receptov in uporabnikov v terminal nalimi: 
+psql -h localhost -U "$(whoami)" -d recepti \
+  -f "docs/vzorčni-recepti.sql"

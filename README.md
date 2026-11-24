@@ -309,6 +309,7 @@ Komentarje in ocene lahko dodajo prijavljeni uporabniki. Prijavljeni uporabnik l
 
 ### Opis razrednega diagrama
 Diagram prikazuje štiri glavne razrede aplikacije za recepte.
+
     •    Recept hrani podatke o receptu, na primer ime, opis, sestavine, navodila in čas priprave. Uporabnik lahko recept doda, uredi, izbriše ali poišče po imenu. 
     
     •    Uporabnik predstavlja osebo z računom. Uporabnik se lahko registrira, prijavi in uredi svoje podatke. Brisanje računa je načrtovana funkcionalnost. Geslo je shranjeno kot zgoščena vrednost.

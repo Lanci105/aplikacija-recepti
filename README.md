@@ -302,3 +302,16 @@ Komentarje in ocene lahko dodajo prijavljeni uporabniki. Prijavljeni uporabnik l
 
 ## Diagram primerov uporabe
 ![Diagram primerov uporabe](backend/Slike/diagram.png)
+
+
+## Razredni diagram
+![Razredni diagram](backend/Slike/razredni_diagram.png)
+
+### Opis razrednega diagrama
+Diagram prikazuje štiri glavne razrede aplikacije za recepte.
+    •    Recept hrani podatke o receptu, na primer ime, opis, sestavine, navodila in čas priprave. Uporabnik lahko recept doda, uredi, izbriše ali poišče po imenu.
+    •    Uporabnik predstavlja osebo z računom. Uporabnik se lahko registrira, prijavi in uredi svoje podatke. Brisanje računa je načrtovana funkcionalnost. Geslo je shranjeno kot zgoščena vrednost.
+    •    Komentar vsebuje besedilo, oceno od 1 do 5 in datum objave. Vsak komentar je povezan z enim uporabnikom in enim receptom. Uporabnik lahko doda komentar ali izbriše svojega.
+    •    PriljubljenRecept povezuje uporabnika z receptom, ki ga je shranil med priljubljene. Dodajanje in odstranjevanje priljubljenih receptov sta načrtovani funkcionalnosti.
+
+

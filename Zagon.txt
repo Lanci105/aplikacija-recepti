@@ -79,3 +79,7 @@ drugi terminal:
 cd "/pot/do/aplikacija-recepti/frontend"
 npm install
 npm run dev
+
+
+cd "/Users/ivonadjoko/Documents/Lana recepti/aplikacija-recepti/backend"
+cd "/Users/ivonadjoko/Documents/Lana recepti/aplikacija-recepti/frontend"
